@@ -4,7 +4,7 @@
 $servername = "localhost";
 $username = "logi_admin"; // Palitan mo ito ng iyong database username
 $password = "123";     // Palitan mo ito ng iyong database password
-$dbname = "logi_admin"; // Pangalan ng database na ginawa sa database.sql
+$dbname = "logistics_db"; // Pangalan ng database na ginawa sa database.sql
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

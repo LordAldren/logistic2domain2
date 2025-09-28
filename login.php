@@ -155,9 +155,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <img src="logo.png" alt="SLATE Logo">
           <h2>SLATE Login</h2>
           <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <input type="text" name="username" placeholder="Username" required value="">
+            <input type="text" name="username" placeholder="Username" required value="<?php echo htmlspecialchars($username); ?>">
             <div class="password-wrapper">
-              <input type="password" name="password" id="password" placeholder="Password" required value="">
+              <input type="password" name="password" id="password" placeholder="Password" required>
               <span class="toggle-password" id="togglePassword"></span>
             </div>
             <div class="forgot-password">
