@@ -78,126 +78,95 @@ body.dark-mode {
 
 /* --- Sidebar Links & Dropdowns (REWORKED) --- */
 
-/* General styling para sa lahat ng clickable items sa sidebar */
-.sidebar a {
+.sidebar-link,
+.sidebar .dropdown-toggle {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    padding: 0.8rem 1.5rem;
     color: var(--text-muted-light);
     text-decoration: none;
-    transition: all 0.2s ease-in-out;
     font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Para sa non-dropdown links tulad ng Dashboard */
-.sidebar > a {
-    padding: 0.8rem 1.5rem;
     border-left: 4px solid transparent;
+    transition: all 0.2s ease-in-out;
     margin-bottom: 0.25rem;
 }
 
-.sidebar > a:hover,
-.sidebar > a.active {
+.sidebar-link:hover,
+.dropdown-toggle:hover,
+.sidebar-link.active,
+.dropdown.active .dropdown-toggle {
     background-color: rgba(74, 108, 247, 0.1);
     color: white;
     border-left-color: var(--primary-color);
 }
 
-/* Dropdown container */
-.sidebar .dropdown {
-    margin-bottom: 0.25rem;
-}
-
-/* Ang clickable header ng dropdown */
-.sidebar .dropdown .dropdown-toggle {
+.dropdown-toggle {
     cursor: pointer;
     width: 100%;
-    padding: 0.8rem 1.5rem;
-    border-left: 4px solid transparent;
-    display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
-/* Active/Hover state para sa dropdown header */
-.sidebar .dropdown.active > .dropdown-toggle,
-.sidebar .dropdown .dropdown-toggle:hover {
-    background-color: rgba(74, 108, 247, 0.1);
-    color: white;
-    border-left-color: var(--primary-color);
-}
-
-/* Wrapper para sa icon at text para maiwasan ang overflow issues */
-.sidebar .dropdown .dropdown-toggle .link-content {
+.dropdown-toggle .link-content {
     display: flex;
     align-items: center;
     gap: 1rem;
-    overflow: hidden; /* Mahalaga ito para hindi lumagpas ang text */
+    overflow: hidden;
 }
 
-.sidebar .dropdown .dropdown-toggle .link-content span {
+.dropdown-toggle .link-content span {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* Arrow indicator */
-.sidebar .dropdown .dropdown-toggle::after {
+.dropdown-toggle::after {
     content: '▼';
     font-size: 0.7em;
     color: var(--text-muted-light);
     transition: transform 0.3s ease-in-out;
     margin-left: 0.5rem;
-    flex-shrink: 0; /* Para hindi ma-squish ang arrow */
+    flex-shrink: 0;
 }
 
-/* Pag-ikot ng arrow kapag bukas ang dropdown */
-.sidebar .dropdown.open > .dropdown-toggle::after {
+.dropdown.open > .dropdown-toggle::after {
     transform: rotate(180deg);
 }
 
-.sidebar .dropdown.open > .dropdown-toggle,
-.sidebar .dropdown.active > .dropdown-toggle {
-    color: white;
-}
-.sidebar .dropdown.open > .dropdown-toggle::after,
-.sidebar .dropdown.active > .dropdown-toggle::after {
+.dropdown.open > .dropdown-toggle,
+.dropdown.active > .dropdown-toggle {
     color: white;
 }
 
-/* Ang mismong menu na naglalaman ng sub-links */
-.sidebar .dropdown-menu {
+.dropdown.open > .dropdown-toggle::after,
+.dropdown.active > .dropdown-toggle::after {
+    color: white;
+}
+
+.dropdown-menu {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-in-out;
     background-color: rgba(0, 0, 0, 0.2);
-    padding-left: 1rem; /* Indent para sa sub-menu */
-    margin-top: 0.25rem;
+    padding-left: 1rem;
 }
 
-/* Pagbukas ng dropdown-menu */
-.sidebar .dropdown.open > .dropdown-menu {
-    max-height: 20rem; /* Dapat sapat ang taas para sa lahat ng items */
+.dropdown.open .dropdown-menu {
+    max-height: 20rem; /* Adjust as needed */
 }
 
-/* Ang mga link sa loob ng dropdown menu */
-.sidebar .dropdown-menu a {
-    padding: 0.6rem 1rem 0.6rem 3rem; /* Mas malaking indent para sa sub-items */
+.dropdown-menu .sidebar-link {
+    padding-left: 3.5rem;
     font-size: 0.85em;
-    border-left: 4px solid transparent;
-    display: block;
+    margin-bottom: 0;
+    border-left: 4px solid transparent !important;
 }
 
-.sidebar .dropdown-menu a:hover,
-.sidebar .dropdown-menu a.active-sub {
+.dropdown-menu .sidebar-link:hover,
+.dropdown-menu .sidebar-link.active-sub {
     background-color: rgba(74, 108, 247, 0.2);
     color: white;
-    border-left-color: var(--info-color);
+    border-left-color: var(--info-color) !important;
 }
-
 
 /* --- Content Area --- */
 .content { 
@@ -346,3 +315,4 @@ input:checked+.slider:before { transform: translateX(26px); }
     .content { padding: 1rem; }
     .card { padding: 1rem; }
 }
+
