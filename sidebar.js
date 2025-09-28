@@ -12,14 +12,6 @@ function initializeSidebarDropdowns() {
     // Auto-open ALL dropdowns by default
     document.querySelectorAll('.sidebar .dropdown').forEach(function(dropdown) {
         dropdown.classList.add('open');
-        const menu = dropdown.querySelector('.dropdown-menu');
-        if (menu) {
-            // Calculate proper height for all items
-            const items = menu.querySelectorAll('a');
-            const itemHeight = 2.5; // rem
-            const totalHeight = items.length * itemHeight;
-            menu.style.maxHeight = totalHeight + 'rem';
-        }
     });
 
     // Handle dropdown toggle clicks
@@ -42,15 +34,6 @@ function initializeSidebarDropdowns() {
 
             // Toggle current dropdown
             parent.classList.toggle('open');
-            if (parent.classList.contains('open')) {
-                // Calculate proper height for all items
-                const items = menu.querySelectorAll('a');
-                const itemHeight = 2.5; // rem
-                const totalHeight = items.length * itemHeight;
-                menu.style.maxHeight = totalHeight + 'rem';
-            } else {
-                menu.style.maxHeight = '0';
-            }
         });
     });
 }
