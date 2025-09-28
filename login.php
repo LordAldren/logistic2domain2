@@ -46,8 +46,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (empty($error_message)) {
                             // Debug: Log password verification attempt
                             error_log("Attempting password verification for user: $db_username");
+                            
+                            // Check if password is hashed or plain text
+                            $password_valid = false;
+                            
+                            // First try password_verify for hashed passwords
                             if (password_verify($password, $hashed_password)) {
-                                error_log("Password verification SUCCESS for user: $db_username");
+                                $password_valid = true;
+                                error_log("Password verification SUCCESS (hashed) for user: $db_username");
+                            }
+                            // If password_verify fails, check if it's plain text match
+                            elseif ($password === $hashed_password) {
+                                $password_valid = true;
+                                error_log("Password verification SUCCESS (plain text) for user: $db_username");
+                                
+                                // Hash the plain text password for future use
+                                $new_hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                                $update_password_stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                                $update_password_stmt->bind_param("si", $new_hashed_password, $id);
+                                $update_password_stmt->execute();
+                                $update_password_stmt->close();
+                                error_log("Password hashed and updated for user: $db_username");
+                            }
+                            
+                            if ($password_valid) {
                                 $reset_stmt = $conn->prepare("UPDATE users SET failed_login_attempts = 0, lockout_until = NULL WHERE id = ?");
                                 $reset_stmt->bind_param("i", $id);
                                 $reset_stmt->execute();
@@ -69,6 +91,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             } else {
                                 error_log("Password verification FAILED for user: $db_username");
+                                error_log("Entered password: '$password'");
+                                error_log("Stored password: '$hashed_password'");
                                 $failed_attempts++;
                                 $max_attempts = 5;
                                 if ($failed_attempts >= $max_attempts) {
