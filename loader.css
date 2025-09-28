@@ -42,14 +42,13 @@
 
 /* Kalsada kung saan dadaan ang mga sasakyan */
 .road {
-    width: 150%;
+    width: 100%; /* Gawing 100% para sakupin ang container */
     height: 4px;
     background-image: linear-gradient(to right, #4A6CF7 40%, transparent 40%);
     background-size: 20px 4px;
-    position: relative;
-    left: -25%; 
     margin-top: 2rem;
     margin-bottom: 1.5rem;
+    position: relative; /* Kailangan pa rin para sa position ng sasakyan */
 }
 
 /* Container para sa bawat sasakyan at animation nito */
@@ -104,9 +103,10 @@
 
 @keyframes driveAcross {
     0% {
-        transform: translateX(0);
+        transform: translateX(-50px); /* Magsimula sa medyo kaliwa ng container */
     }
     100% {
-        transform: translateX(calc(400px + 250px)); 
+        transform: translateX(450px); /* Tumawid sa buong container */
     }
 }
+
