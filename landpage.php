@@ -54,7 +54,7 @@ $initial_locations_json = json_encode($initial_locations);
       .dashboard-stats { grid-column: 1 / -1; }
       .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
       .dashboard-map { grid-column: 1 / 3; grid-row: 2 / 4; }
-      #map { height: 100%; min-height: 500px; border-radius: 0.5rem; /* Match Tailwind's rounded-lg */ }
+      #map { height: 100%; min-height: 500px; border-radius: 0.5rem; }
       .dashboard-cards-sidebar { grid-column: 3 / 4; grid-row: 2 / 4; display: flex; flex-direction: column; gap: 1.5rem; }
       @media (max-width: 1200px) { .dashboard-main-grid { grid-template-columns: 1fr; } .dashboard-map, .dashboard-cards-sidebar { grid-column: 1 / -1; grid-row: auto; } }
       
@@ -64,15 +64,22 @@ $initial_locations_json = json_encode($initial_locations);
           border-radius: 0.75rem; 
           padding: 1.5rem; 
           box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-          transition: background-color 0.3s ease-in-out;
+          transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
       }
       .dark .card {
           background-color: #1f2937; /* Tailwind bg-gray-800 */
           border: 1px solid #374151; /* Tailwind border-gray-700 */
       }
-      .dark h3, .dark .table-section h3 { color: #d1d5db; } /* text-gray-300 */
+      .dark h3, .dark .table-section h3, .dark .text-2xl, .dark .font-bold, .dark .text-gray-500, .dark a { 
+          color: #d1d5db; /* text-gray-300 */
+      }
       .dark .table-section th { color: #9ca3af; } /* text-gray-400 */
-      .dark .table-section td { border-bottom: 1px solid #374151; } /* border-gray-700 */
+      .dark .table-section td { border-bottom-color: #374151; } /* border-gray-700 */
+      .dark .p-3 { background-color: rgba(255, 255, 255, 0.1) !important; }
+      .dark .text-green-600 { color: #34d399 !important; }
+      .dark .text-red-600 { color: #f87171 !important; }
+      .dark .text-yellow-600 { color: #fbbf24 !important; }
+      .dark .text-purple-600 { color: #a78bfa !important; }
       
       .table-section h3 { margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600; }
       .table-section table { width: 100%; border-collapse: collapse; }
@@ -85,7 +92,6 @@ $initial_locations_json = json_encode($initial_locations);
       <div class="loader-content">
           <img src="logo.png" alt="SLATE Logo" class="loader-logo-main">
           <p id="loader-text">Initializing System...</p>
-          <!-- --- IBINALIK ANG MGA SVG NG SASAKYAN --- -->
           <div class="road">
               <div class="vehicle-container vehicle-1">
                 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M503.3 337.2c-7.2-21.6-21.6-36-43.2-43.2l-43.2-14.4V232c0-23.9-19.4-43.2-43.2-43.2H256V96c0-12.7-5.1-24.9-14.1-33.9L208 28.3c-9-9-21.2-14.1-33.9-14.1H48C21.5 14.2 0 35.7 0 62.2V337c0 23.9 19.4 43.2 43.2 43.2H64c0 35.3 28.7 64 64 64s64-28.7 64-64h128c0 35.3 28.7 64 64 64s64-28.7 64-64h17.3c23.9 0 43.2-19.4 43.2-43.2V337.2zM128 401c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm0-192h-88.8v-48H384v48z"/></svg>
@@ -102,10 +108,8 @@ $initial_locations_json = json_encode($initial_locations);
 
   <?php include 'sidebar.php'; ?> 
 
-  <!-- MAIN CONTENT: Inayos para mag-adjust sa sidebar -->
   <main id="main-content" class="ml-64 transition-all duration-300 ease-in-out">
     <div class="p-6">
-        <!-- Header Section inside Main Content -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Dashboard</h1>
             <div class="theme-toggle-container flex items-center gap-2">
@@ -117,14 +121,13 @@ $initial_locations_json = json_encode($initial_locations);
             </div>
         </div>
 
-        <!-- The rest of your dashboard content -->
         <div class="dashboard-main-grid">
             <div class="dashboard-stats">
                 <div class="dashboard-cards">
-                    <div class="card flex items-center"><div class="p-3 rounded-full bg-green-100 text-green-600 mr-4"><i data-lucide="check-circle"></i></div><div><h3 class="text-gray-500">Successful Deliveries</h3><div class="text-2xl font-bold"><?php echo $successful_deliveries; ?></div></div></div>
-                    <div class="card flex items-center"><div class="p-3 rounded-full bg-red-100 text-red-600 mr-4"><i data-lucide="wrench"></i></div><div><h3 class="text-gray-500">Pending Maintenance</h3><div class="text-2xl font-bold"><?php echo $pending_maintenance; ?></div></div></div>
-                    <div class="card flex items-center"><div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4"><i data-lucide="dollar-sign"></i></div><div><h3 class="text-gray-500">Cost This Month</h3><div class="text-2xl font-bold">₱<?php echo number_format($current_month_cost, 2); ?></div></div></div>
-                    <div class="card flex items-center"><div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4"><i data-lucide="brain-circuit"></i></div><div><h3 class="text-gray-500">AI Forecast (Tomorrow)</h3><div id="daily-prediction-loader-card" class="font-semibold">Training...</div><div id="daily-prediction-result-card" class="text-2xl font-bold" style="display:none;"></div></div></div>
+                    <div class="card flex items-center"><div class="p-3 rounded-full bg-green-100 text-green-600 mr-4"><i data-lucide="check-circle"></i></div><div><h3 class="text-gray-500">Successful Deliveries</h3><div class="text-2xl font-bold text-gray-800"><?php echo $successful_deliveries; ?></div></div></div>
+                    <div class="card flex items-center"><div class="p-3 rounded-full bg-red-100 text-red-600 mr-4"><i data-lucide="wrench"></i></div><div><h3 class="text-gray-500">Pending Maintenance</h3><div class="text-2xl font-bold text-gray-800"><?php echo $pending_maintenance; ?></div></div></div>
+                    <div class="card flex items-center"><div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4"><i data-lucide="dollar-sign"></i></div><div><h3 class="text-gray-500">Cost This Month</h3><div class="text-2xl font-bold text-gray-800">₱<?php echo number_format($current_month_cost, 2); ?></div></div></div>
+                    <div class="card flex items-center"><div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4"><i data-lucide="brain-circuit"></i></div><div><h3 class="text-gray-500">AI Forecast (Tomorrow)</h3><div id="daily-prediction-loader-card" class="font-semibold text-gray-800">Training...</div><div id="daily-prediction-result-card" class="text-2xl font-bold text-gray-800" style="display:none;"></div></div></div>
                 </div>
             </div>
 
@@ -176,7 +179,7 @@ $initial_locations_json = json_encode($initial_locations);
                             <?php endif; ?>
                         </tbody>
                     </table>
-                    <a href="driver_behavior.php" style="display:block; text-align:right; margin-top:1rem; font-size:0.9em;">View All Logs</a>
+                    <a href="driver_behavior.php" class="block text-right mt-4 text-sm text-blue-600 hover:underline">View All Logs</a>
                 </div>
                 <div class="card"><h3>Trip Cost Trend</h3><div style="height: 250px;"><canvas id="costChart"></canvas></div></div>
             </div>
@@ -185,7 +188,6 @@ $initial_locations_json = json_encode($initial_locations);
   </main>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        
         // --- AI & Chart Logic ---
         const dailyCostDataForAI = <?php echo $daily_costs_json; ?>;
         const dailyChartData = <?php echo $daily_chart_json; ?>;
@@ -295,7 +297,6 @@ $initial_locations_json = json_encode($initial_locations);
         });
         initializeFirebaseListener();
 
-        // Initialize Lucide Icons after DOM is ready
         lucide.createIcons();
     });
 </script>
