@@ -21,8 +21,10 @@ $ma_pages = ['mobile_app.php', 'admin_alerts.php', 'admin_messaging.php'];
 
 function render_sidebar_link($href, $icon_svg, $text, $is_active) {
     echo "<a href=\"$href\" class=\"sidebar-link " . ($is_active ? 'active' : '') . "\">";
+    echo "<div class=\"link-content\">";
     echo "<span class=\"sidebar-icon\">$icon_svg</span>";
     echo "<span>$text</span>";
+    echo "</div>";
     echo "</a>";
 }
 
