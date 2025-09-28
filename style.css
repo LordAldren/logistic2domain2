@@ -84,6 +84,8 @@ body.dark-mode {
     border-left: 4px solid transparent; 
     transition: all 0.2s ease-in-out; 
     font-weight: 500;
+    min-height: 3rem;
+    position: relative;
 }
 
 .sidebar a:hover, .sidebar .dropdown.active > .dropdown-toggle, .sidebar > a.active { 
@@ -110,41 +112,66 @@ body.dark-mode {
 .sidebar .dropdown .dropdown-toggle { 
     position: relative; 
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .sidebar .dropdown .dropdown-toggle::after { 
-    content: '›'; 
+    content: '‹'; 
     position: absolute; 
     right: 1.5rem; 
-    font-size: 1.5em; 
+    font-size: 1.2em; 
     transition: transform 0.3s ease-in-out; 
     pointer-events: none;
+    font-weight: bold;
 }
 .sidebar .dropdown.open > .dropdown-toggle::after { 
-    transform: rotate(90deg); 
+    transform: rotate(-90deg); 
 }
 .sidebar .dropdown-menu { 
     max-height: 0; 
     overflow: hidden; 
     transition: max-height 0.4s ease-in-out; 
-    background-color: rgba(0,0,0,0.2); 
+    background-color: rgba(0, 0, 0, 0.3); 
     border-radius: 0 0 8px 8px;
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid rgba(74, 108, 247, 0.3);
 }
 .sidebar .dropdown.open > .dropdown-menu,
 .sidebar .dropdown .dropdown-menu { 
     max-height: 500px; 
 }
 .sidebar .dropdown-menu a { 
-    font-size: 0.9em; 
-    padding-left: calc(1.5rem + 24px + 1rem); 
+    font-size: 0.85em; 
+    padding: 0.6rem 1.5rem 0.6rem calc(1.5rem + 24px + 1rem); 
     background: none; 
     border-left: 4px solid transparent !important; 
     transition: all 0.2s ease-in-out;
+    display: block;
+    margin: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.sidebar .dropdown-menu a:last-child {
+    border-bottom: none;
 }
 .sidebar .dropdown-menu a:hover, 
 .sidebar .dropdown-menu a.active-sub { 
-    background-color: rgba(74, 108, 247, 0.1); 
+    background-color: rgba(74, 108, 247, 0.15); 
     border-left-color: var(--info-color) !important; 
     color: white; 
+    padding-left: calc(1.5rem + 24px + 1rem + 0.5rem);
+}
+
+/* Better spacing for dropdown items */
+.sidebar .dropdown {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar .dropdown-menu a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Ensure dropdowns work on mobile */
@@ -153,6 +180,26 @@ body.dark-mode {
         position: relative;
         box-shadow: none;
     }
+    
+    .sidebar .dropdown-menu a {
+        padding: 0.5rem 1rem 0.5rem calc(1rem + 24px + 0.5rem);
+        font-size: 0.8em;
+    }
+}
+
+/* Dark mode improvements */
+.dark-mode .sidebar .dropdown-menu {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-left-color: rgba(74, 108, 247, 0.5);
+}
+
+.dark-mode .sidebar .dropdown-menu a {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .sidebar .dropdown-menu a:hover,
+.dark-mode .sidebar .dropdown-menu a.active-sub {
+    background-color: rgba(74, 108, 247, 0.2);
 }
 
 /* --- Content Area --- */
