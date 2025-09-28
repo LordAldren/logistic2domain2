@@ -76,97 +76,20 @@ body.dark-mode {
 .sidebar-icon { width: 24px; height: 24px; flex-shrink: 0; }
 .sidebar .logout-link { margin-top: auto; }
 
-/* --- Sidebar Links & Dropdowns (REWORKED) --- */
-
-.sidebar-link,
-.sidebar .dropdown-toggle {
-    display: flex;
-    align-items: center;
-    padding: 0.8rem 1.5rem;
-    color: var(--text-muted-light);
-    text-decoration: none;
-    font-weight: 500;
-    border-left: 4px solid transparent;
-    transition: all 0.2s ease-in-out;
-    margin-bottom: 0.25rem;
+/* Collapsed Sidebar */
+.sidebar.collapsed { width: var(--sidebar-width-collapsed); }
+.sidebar.collapsed .system-name, .sidebar.collapsed .sidebar-link span, .sidebar.collapsed .dropdown-toggle .link-content span, .sidebar.collapsed .dropdown-toggle::after { 
+    opacity: 0; 
+    display: none; 
+    pointer-events: none; /* Para hindi ma-click kahit nakatago */
+}
+.sidebar.collapsed .sidebar-link, .sidebar.collapsed .dropdown-toggle { 
+    justify-content: center; 
+}
+.sidebar.collapsed .dropdown-menu { 
+    display: none !important; /* Tiyaking nakatago ang sub-menu kapag collapsed */
 }
 
-.sidebar-link:hover,
-.dropdown-toggle:hover,
-.sidebar-link.active,
-.dropdown.active .dropdown-toggle {
-    background-color: rgba(74, 108, 247, 0.1);
-    color: white;
-    border-left-color: var(--primary-color);
-}
-
-.dropdown-toggle {
-    cursor: pointer;
-    width: 100%;
-    justify-content: space-between;
-}
-
-.dropdown-toggle .link-content {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    overflow: hidden;
-}
-
-.dropdown-toggle .link-content span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.dropdown-toggle::after {
-    content: '▼';
-    font-size: 0.7em;
-    color: var(--text-muted-light);
-    transition: transform 0.3s ease-in-out;
-    margin-left: 0.5rem;
-    flex-shrink: 0;
-}
-
-.dropdown.open > .dropdown-toggle::after {
-    transform: rotate(180deg);
-}
-
-.dropdown.open > .dropdown-toggle,
-.dropdown.active > .dropdown-toggle {
-    color: white;
-}
-
-.dropdown.open > .dropdown-toggle::after,
-.dropdown.active > .dropdown-toggle::after {
-    color: white;
-}
-
-.dropdown-menu {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding-left: 1rem;
-}
-
-.dropdown.open .dropdown-menu {
-    max-height: 20rem; /* Adjust as needed */
-}
-
-.dropdown-menu .sidebar-link {
-    padding-left: 3.5rem;
-    font-size: 0.85em;
-    margin-bottom: 0;
-    border-left: 4px solid transparent !important;
-}
-
-.dropdown-menu .sidebar-link:hover,
-.dropdown-menu .sidebar-link.active-sub {
-    background-color: rgba(74, 108, 247, 0.2);
-    color: white;
-    border-left-color: var(--info-color) !important;
-}
 
 /* --- Content Area --- */
 .content { 
@@ -315,4 +238,5 @@ input:checked+.slider:before { transform: translateX(26px); }
     .content { padding: 1rem; }
     .card { padding: 1rem; }
 }
+
 
