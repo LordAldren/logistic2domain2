@@ -32,6 +32,7 @@ function render_dropdown($text, $icon_svg, $pages, $current_page, $sub_links) {
     echo "<span class=\"sidebar-icon\">$icon_svg</span>";
     echo "<span>$text</span>";
     echo "</div>";
+    echo "<span class=\"arrow\"></span>"; // Arrow for dropdown
     echo "</a>";
     echo "<div class=\"dropdown-menu\">";
     foreach ($sub_links as $link_href => $link_text) {
