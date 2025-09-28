@@ -19,6 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($username) || empty($password)) {
         $error_message = "Please enter both username and password.";
     } else {
+        // Debug: Log the login attempt
+        error_log("Login attempt - Username: $username");
         $sql = "SELECT id, username, email, password, role, failed_login_attempts, lockout_until FROM users WHERE username = ?";
         
         if ($stmt = $conn->prepare($sql)) {
@@ -30,6 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($stmt->num_rows == 1) {                    
                     $stmt->bind_result($id, $db_username, $email, $hashed_password, $role, $failed_attempts, $lockout_until);
                     if ($stmt->fetch()) {
+                        // Debug: Log user found
+                        error_log("User found - ID: $id, Username: $db_username, Role: $role");
                         
                         if ($lockout_until !== null) {
                             $now = new DateTime();
@@ -40,35 +44,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         }
 
                         if (empty($error_message)) {
+                            // Debug: Log password verification attempt
+                            error_log("Attempting password verification for user: $db_username");
                             if (password_verify($password, $hashed_password)) {
+                                error_log("Password verification SUCCESS for user: $db_username");
                                 $reset_stmt = $conn->prepare("UPDATE users SET failed_login_attempts = 0, lockout_until = NULL WHERE id = ?");
                                 $reset_stmt->bind_param("i", $id);
                                 $reset_stmt->execute();
                                 $reset_stmt->close();
 
-                                $otp_code = rand(100000, 999999);
-                                $otp_expires = (new DateTime())->add(new DateInterval("PT5M"))->format('Y-m-d H:i:s');
-                                
-                                $otp_stmt = $conn->prepare("UPDATE users SET otp_code = ?, otp_expires_at = ? WHERE id = ?");
-                                $otp_stmt->bind_param("ssi", $otp_code, $otp_expires, $id);
-                                $otp_stmt->execute();
-                                $otp_stmt->close();
-                                
-                                $subject = "Your OTP for SLATE Logistics Login";
-                                $body = "<h3>Login Verification</h3>
-                                         <p>Your One-Time Password (OTP) is: <strong>$otp_code</strong></p>
-                                         <p>This code will expire in 5 minutes.</p>
-                                         <p>If you did not request this, please ignore this email.</p>";
-                                
-                                if (sendEmail($email, $subject, $body)) {
-                                    $_SESSION['otp_user_id'] = $id;
-                                    header("location: verify_otp.php");
-                                    exit;
+                                // DIRECT LOGIN - BYPASS OTP FOR TESTING
+                                session_regenerate_id(true);
+                                $_SESSION["loggedin"] = true;
+                                $_SESSION["id"] = $id;
+                                $_SESSION["username"] = $db_username;
+                                $_SESSION["role"] = $role;
+
+                                if ($role == 'driver') {
+                                    header("location: mobile_app.php");
                                 } else {
-                                    $error_message = "Failed to send OTP email. Please try again later.";
+                                    header("location: landpage.php");
                                 }
+                                exit;
 
                             } else {
+                                error_log("Password verification FAILED for user: $db_username");
                                 $failed_attempts++;
                                 $max_attempts = 5;
                                 if ($failed_attempts >= $max_attempts) {
