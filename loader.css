@@ -45,7 +45,7 @@
     width: 100%; /* Gawing 100% para sakupin ang container */
     height: 4px;
     background-image: linear-gradient(to right, #4A6CF7 40%, transparent 40%);
-    background-size: 20px 4px;
+    background-size: 10px 4px;
     margin-top: 2rem;
     margin-bottom: 1.5rem;
     position: relative; /* Kailangan pa rin para sa position ng sasakyan */
