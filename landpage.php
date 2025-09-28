@@ -57,7 +57,23 @@ $initial_locations_json = json_encode($initial_locations);
       #map { height: 100%; min-height: 500px; border-radius: 0.5rem; /* Match Tailwind's rounded-lg */ }
       .dashboard-cards-sidebar { grid-column: 3 / 4; grid-row: 2 / 4; display: flex; flex-direction: column; gap: 1.5rem; }
       @media (max-width: 1200px) { .dashboard-main-grid { grid-template-columns: 1fr; } .dashboard-map, .dashboard-cards-sidebar { grid-column: 1 / -1; grid-row: auto; } }
-      .card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+      
+      /* --- FIX PARA SA DARK MODE AT CARDS --- */
+      .card { 
+          background-color: white; 
+          border-radius: 0.75rem; 
+          padding: 1.5rem; 
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+          transition: background-color 0.3s ease-in-out;
+      }
+      .dark .card {
+          background-color: #1f2937; /* Tailwind bg-gray-800 */
+          border: 1px solid #374151; /* Tailwind border-gray-700 */
+      }
+      .dark h3, .dark .table-section h3 { color: #d1d5db; } /* text-gray-300 */
+      .dark .table-section th { color: #9ca3af; } /* text-gray-400 */
+      .dark .table-section td { border-bottom: 1px solid #374151; } /* border-gray-700 */
+      
       .table-section h3 { margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600; }
       .table-section table { width: 100%; border-collapse: collapse; }
       .table-section th, .table-section td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
@@ -69,7 +85,18 @@ $initial_locations_json = json_encode($initial_locations);
       <div class="loader-content">
           <img src="logo.png" alt="SLATE Logo" class="loader-logo-main">
           <p id="loader-text">Initializing System...</p>
-          <div class="road"><!-- SVGs for animation here --></div>
+          <!-- --- IBINALIK ANG MGA SVG NG SASAKYAN --- -->
+          <div class="road">
+              <div class="vehicle-container vehicle-1">
+                <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M503.3 337.2c-7.2-21.6-21.6-36-43.2-43.2l-43.2-14.4V232c0-23.9-19.4-43.2-43.2-43.2H256V96c0-12.7-5.1-24.9-14.1-33.9L208 28.3c-9-9-21.2-14.1-33.9-14.1H48C21.5 14.2 0 35.7 0 62.2V337c0 23.9 19.4 43.2 43.2 43.2H64c0 35.3 28.7 64 64 64s64-28.7 64-64h128c0 35.3 28.7 64 64 64s64-28.7 64-64h17.3c23.9 0 43.2-19.4 43.2-43.2V337.2zM128 401c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm0-192h-88.8v-48H384v48z"/></svg>
+              </div>
+              <div class="vehicle-container vehicle-2">
+                <svg viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M624 352h-16V243.9c0-12.7-5.1-24.9-14.1-33.9L494 110.1c-9-9-21.2-14.1-33.9-14.1H416V48c0-26.5-21.5-48-48-48H112C85.5 0 64 21.5 64 48v48H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h16c0 35.3 28.7 64 64 64s64-28.7 64-64h192c0 35.3 28.7 64 64 64s64-28.7 64-64h16c26.5 0 48-21.5 48-48V368c0-8.8-7.2-16-16-16zM128 400c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm384 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zM480 224H128V144h288v48c0 26.5 21.5 48 48 48h16v-16z"/></svg>
+              </div>
+              <div class="vehicle-container vehicle-3">
+                 <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M503.3 337.2c-7.2-21.6-21.6-36-43.2-43.2l-43.2-14.4V232c0-23.9-19.4-43.2-43.2-43.2H256V96c0-12.7-5.1-24.9-14.1-33.9L208 28.3c-9-9-21.2-14.1-33.9-14.1H48C21.5 14.2 0 35.7 0 62.2V337c0 23.9 19.4 43.2 43.2 43.2H64c0 35.3 28.7 64 64 64s64-28.7 64-64h128c0 35.3 28.7 64 64 64s64-28.7 64-64h17.3c23.9 0 43.2-19.4 43.2-43.2V337.2zM128 401c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm0-192h-88.8v-48H384v48z"/></svg>
+              </div>
+          </div>
       </div>
   </div>
 
