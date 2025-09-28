@@ -114,7 +114,6 @@ $initial_locations_json = json_encode($initial_locations);
     </div>
   </div>
 
-  <?php include './sidebar.php'; ?>
 
   <div class="content" id="mainContent">
     <div class="header">
