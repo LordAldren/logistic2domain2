@@ -217,17 +217,8 @@ function is_module_active($pages, $currentPage) {
         </div>
     </div>
 
-    <!-- 
-      Ito ang placeholder para sa main content mo.
-      Nagdagdag ako ng `id="main-content"` at `ml-64` (margin-left) para hindi matakpan ng sidebar.
-      Ang JavaScript sa baba ang bahalang mag-adjust nito kapag nag-collapse/expand ang sidebar.
-    -->
-    <main id="main-content" class="flex-1 p-4 sm:p-6 md:p-8 ml-64">
-        <!-- Dito ilalagay ang content ng iyong page -->
-        <h1 class="text-2xl font-bold">Main Content Area</h1>
-        <p>Halimbawa, dito ang laman ng iyong dashboard, table, o forms.</p>
-    </main>
-
+  
+   
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
