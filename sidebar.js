@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
     // Hamburger icon para i-toggle ang sidebar sa mobile at i-collapse sa desktop
     document.getElementById('hamburger').addEventListener('click', function() {
         const sidebar = document.getElementById('sidebar');
