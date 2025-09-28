@@ -64,6 +64,7 @@ $initial_locations_json = json_encode($initial_locations);
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="sidebar.js"></script>
   <style>
       /* Page-specific styles */
       .dashboard-main-grid {
@@ -221,33 +222,7 @@ $initial_locations_json = json_encode($initial_locations);
           else { sidebar.classList.toggle('collapsed'); mainContent.classList.toggle('expanded'); }
         });
 
-        const activeDropdown = document.querySelector('.sidebar .dropdown.active');
-        if (activeDropdown) {
-            activeDropdown.classList.add('open');
-            const menu = activeDropdown.querySelector('.dropdown-menu');
-            if (menu) {
-                menu.style.maxHeight = menu.scrollHeight + 'px';
-            }
-        }
-        document.querySelectorAll('.sidebar .dropdown-toggle').forEach(function(toggle) {
-            toggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                let parent = this.closest('.dropdown');
-                let menu = parent.querySelector('.dropdown-menu');
-                document.querySelectorAll('.sidebar .dropdown.open').forEach(function(otherDropdown) {
-                    if (otherDropdown !== parent) {
-                        otherDropdown.classList.remove('open');
-                        otherDropdown.querySelector('.dropdown-menu').style.maxHeight = '0';
-                    }
-                });
-                parent.classList.toggle('open');
-                if (parent.classList.contains('open')) {
-                    menu.style.maxHeight = menu.scrollHeight + 'px';
-                } else {
-                    menu.style.maxHeight = '0';
-                }
-            });
-        });
+        // Sidebar dropdown functionality is now handled by sidebar.js
 
         // --- AI & Chart Logic ---
         const dailyCostDataForAI = <?php echo $daily_costs_json; ?>;

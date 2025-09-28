@@ -107,13 +107,52 @@ body.dark-mode {
 .sidebar.collapsed .dropdown-menu { display: none !important; }
 
 /* Sidebar Dropdown */
-.sidebar .dropdown .dropdown-toggle { position: relative; }
-.sidebar .dropdown .dropdown-toggle::after { content: '›'; position: absolute; right: 1.5rem; font-size: 1.5em; transition: transform 0.3s ease-in-out; }
-.sidebar .dropdown.open > .dropdown-toggle::after { transform: rotate(90deg); }
-.sidebar .dropdown-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out; background-color: rgba(0,0,0,0.2); }
-.sidebar .dropdown.open > .dropdown-menu { max-height: 500px; }
-.sidebar .dropdown-menu a { font-size: 0.9em; padding-left: calc(1.5rem + 24px + 1rem); background: none; border-left: 4px solid transparent !important; }
-.sidebar .dropdown-menu a:hover, .sidebar .dropdown-menu a.active-sub { background-color: rgba(74, 108, 247, 0.1); border-left-color: var(--info-color) !important; color: white; }
+.sidebar .dropdown .dropdown-toggle { 
+    position: relative; 
+    cursor: pointer;
+}
+.sidebar .dropdown .dropdown-toggle::after { 
+    content: '›'; 
+    position: absolute; 
+    right: 1.5rem; 
+    font-size: 1.5em; 
+    transition: transform 0.3s ease-in-out; 
+    pointer-events: none;
+}
+.sidebar .dropdown.open > .dropdown-toggle::after { 
+    transform: rotate(90deg); 
+}
+.sidebar .dropdown-menu { 
+    max-height: 0; 
+    overflow: hidden; 
+    transition: max-height 0.4s ease-in-out; 
+    background-color: rgba(0,0,0,0.2); 
+    border-radius: 0 0 8px 8px;
+}
+.sidebar .dropdown.open > .dropdown-menu { 
+    max-height: 500px; 
+}
+.sidebar .dropdown-menu a { 
+    font-size: 0.9em; 
+    padding-left: calc(1.5rem + 24px + 1rem); 
+    background: none; 
+    border-left: 4px solid transparent !important; 
+    transition: all 0.2s ease-in-out;
+}
+.sidebar .dropdown-menu a:hover, 
+.sidebar .dropdown-menu a.active-sub { 
+    background-color: rgba(74, 108, 247, 0.1); 
+    border-left-color: var(--info-color) !important; 
+    color: white; 
+}
+
+/* Ensure dropdowns work on mobile */
+@media (max-width: 992px) {
+    .sidebar .dropdown-menu {
+        position: relative;
+        box-shadow: none;
+    }
+}
 
 /* --- Content Area --- */
 .content { 
