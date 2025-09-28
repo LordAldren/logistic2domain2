@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: white;
+  line-height: 1.6;
+}
+
+.main-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 75rem;
+  display: flex;
+  background: rgba(31, 42, 56, 0.8);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.welcome-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: linear-gradient(135deg, #0f2027, #2c5364);
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- ANIMATION STYLES --- */
+.animation-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.road-line {
+    position: absolute;
+    bottom: 35%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-image: linear-gradient(to right, rgba(74, 108, 247, 0.5) 50%, transparent 50%);
+    background-size: 50px 3px;
+    animation: move-road 8s linear infinite;
+}
+
+@keyframes move-road {
+    from { background-position: 0 0; }
+    to { background-position: -100px 0; }
+}
+
+.truck-container {
+    position: absolute;
+    bottom: 35%;
+    left: -250px;
+    animation-name: drive;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.truck-container svg {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.3));
+}
+
+.data-trail {
+    position: absolute;
+    top: 30%; 
+    left: -160px;
+    width: 150px;
+    height: 1px;
+}
+
+.data-trail span {
+    display: block; width: 5px; height: 5px;
+    background-color: #00c6ff; border-radius: 50%;
+    position: absolute; top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    box-shadow: 0 0 8px #00c6ff, 0 0 12px #00c6ff;
+    animation: data-point-move 2.5s linear infinite;
+}
+
+.data-trail span:nth-child(1) { animation-delay: 0s; }
+.data-trail span:nth-child(2) { animation-delay: -0.8s; }
+.data-trail span:nth-child(3) { animation-delay: -1.6s; }
+
+.predictive-route {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 0; 
+    height: 2px;
+    background: linear-gradient(to right, rgba(74, 108, 247, 0.7), transparent);
+    border-radius: 2px;
+    opacity: 0;
+    animation: extend-route 3s ease-out infinite;
+}
+
+@keyframes drive {
+    from { left: -250px; }
+    to { left: 110%; }
+}
+
+@keyframes data-point-move {
+    0% { left: 100%; opacity: 0; }
+    20% { opacity: 1; }
+    100% { left: -20%; opacity: 0; }
+}
+
+@keyframes extend-route {
+    0% { width: 0; opacity: 0.7; transform: translateX(0); }
+    70% { width: 120px; opacity: 0.7; }
+    100% { width: 120px; opacity: 0; transform: translateX(40px); }
+}
+
+/* Styles para sa bawat klase ng sasakyan na may kulay galing sa system palette */
+.truck-1 { /* Container Truck */
+    width: 200px; 
+    animation-duration: 12s;
+    animation-delay: 0s;
+    transform: translateY(-90%);
+    z-index: 10;
+}
+.truck-1 svg {
+    fill: #4A6CF7; /* Primary Color */
+}
+
+.truck-2 { /* Box Truck */
+    bottom: 60%;
+    width: 160px;
+    animation-duration: 9s;
+    animation-delay: 4s;
+    z-index: 20;
+}
+.truck-2 svg {
+    fill: #3B82F6; /* Info Color */
+}
+
+.truck-3 { /* Panel Van */
+    width: 120px;
+    animation-duration: 7s;
+    animation-delay: 7s;
+    transform: translateY(-85%);
+    z-index: 5;
+}
+.truck-3 svg {
+    fill: #64748B; /* Muted Dark/Gray Color */
+}
+/* --- WAKAS NG ANIMATION STYLES --- */
+
+.login-panel {
+  flex-basis: 400px;
+  flex-shrink: 0;
+  padding: 3.75rem 2.5rem;
+  background: rgba(22, 33, 49, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  width: 100%;
+  text-align: center;
+}
+
+.login-box img {
+  width: 6.25rem;
+  height: auto;
+  margin-bottom: 1.25rem;
+}
+
+.login-box h2 {
+  margin-bottom: 1.5625rem;
+  color: #ffffff;
+  font-size: 1.75rem;
+}
+
+.login-box form { display: flex; flex-direction: column; gap: 1.25rem; }
+.login-box input {
+  width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.375rem;
+  color: white; font-size: 1rem; transition: all 0.3s ease;
+}
+.login-box input:focus { outline: none; border-color: #4A6CF7; box-shadow: 0 0 0 0.125rem rgba(74, 108, 247, 0.2); }
+.login-box input::placeholder { color: rgba(160, 160, 160, 0.8); }
+
+.password-wrapper {
+    position: relative;
+}
+.password-wrapper input {
+    padding-right: 2.5rem; /* Make space for the icon */
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+}
+.toggle-password:hover {
+    color: #e5e7eb;
+}
+
+.login-box button {
+  padding: 0.75rem; background: linear-gradient(to right, #4A6CF7, #00c6ff);
+  border: none; border-radius: 0.375rem; font-weight: 600; font-size: 1rem;
+  color: white; cursor: pointer; transition: all 0.3s ease;
+}
+.login-box button:hover {
+  background: linear-gradient(to right, #2749c4, #009ee3); transform: translateY(-0.125rem);
+  box-shadow: 0 0.3125rem 0.9375rem rgba(0, 0, 0, 0.2);
+}
+
+.error-message { color: #ffb3b3; background-color: rgba(255, 0, 0, 0.2); border: 1px solid #ff4d4d; padding: 0.75rem; border-radius: 0.375rem; margin-top: 1rem; text-align: center; }
+.message-banner { padding: 1rem; margin-bottom: 1.5rem; border-radius: 0.35rem; color: white; }
+.message-banner.success { background-color: #1cc88a; }
+.message-banner.error { background-color: #e74a3b; }
+
+.forgot-password { text-align: right; margin-top: -0.75rem; margin-bottom: 1.25rem; }
+.forgot-password a { font-size: 0.9em; color: #00c6ff; text-decoration: none; }
+.register-link { text-align: center; margin-top: 1.5rem; }
+.register-link a { color: #00c6ff; text-decoration: none; font-weight: 600; }
+.back-link { display: inline-block; margin-top: 2rem; color: #00c6ff; text-decoration: none; }
+
+.policy-container {
+    max-width: 800px; margin: 2rem auto; padding: 2rem; background: rgba(31, 42, 56, 0.8);
+    border-radius: 0.75rem; box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.3);
+}
+.policy-container h1 { margin-bottom: 1.5rem; border-bottom: 1px solid #4A6CF7; padding-bottom: 0.5rem; }
+.policy-container h2 { margin-top: 1.5rem; margin-bottom: 0.5rem; color: #00c6ff; }
+.policy-container p, .policy-container li { margin-bottom: 1rem; color: #ccc; }
+.policy-container ul { padding-left: 20px; }
+
+footer {
+  text-align: center; padding: 1.25rem; background: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.7); font-size: 0.875rem;
+}
+footer a { color: #00c6ff; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .login-container { 
+    flex-direction: column; 
+    max-width: 500px;
+  }
+  .welcome-panel { 
+    min-height: 250px;
+  }
+  .login-panel { 
+    flex-basis: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-panel {
+    padding: 2.5rem 1.5rem;
+  }
+}
+

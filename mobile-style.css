@@ -1,0 +1,239 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #4A6CF7;
+  --success-color: #10B981;
+  --info-color: #3B82F6;
+  --danger-color: #EF4444;
+  --bg-light: #F7F7FB;
+  --bg-dark: #131720;
+  --card-light: #FFFFFF;
+  --card-dark: #1C2434;
+  --text-light: #E2E8F0;
+  --text-dark: #212B36;
+  --text-muted: #64748B;
+  --border-color: #E2E8F0;
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: var(--card-light);
+  box-shadow: 0 0 30px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background-color: var(--card-light);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.app-header .logo img {
+    height: 32px;
+    width: auto;
+}
+
+.app-header .logout-button {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.5rem;
+}
+
+.app-main {
+  padding: 1rem;
+  flex-grow: 1;
+}
+
+.card {
+  background-color: var(--card-light);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow);
+}
+.card h2, .card h3 {
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+.card .card-header h2 {
+    margin-bottom: 0;
+}
+
+.trip-card .destination p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.trip-card .destination h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.trip-card .trip-details p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+.no-trip-card {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+}
+.no-trip-card svg {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+.no-trip-card h3 { font-size: 1.25rem; }
+.no-trip-card p { color: var(--text-muted); }
+
+#map {
+    height: 250px;
+    width: 100%;
+    border-radius: 0.5rem;
+    background-color: #eee;
+    z-index: 1;
+}
+#map-loader {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+}
+.action-btn svg {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 0.5rem;
+    fill: white;
+}
+.action-btn.depart { background-color: var(--primary-color); }
+.action-btn.arrive { background-color: var(--info-color); }
+.action-btn.unload { background-color: var(--text-muted); }
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.pod-card {
+    background-color: #f0f5ff;
+}
+
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
+.form-control {
+    display: block; width: 100%; padding: 0.75rem; font-size: 1rem;
+    background-color: var(--bg-light); border: 1px solid var(--border-color);
+    border-radius: 0.5rem; transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.form-control:focus { outline: 0; border-color: var(--primary-color); }
+
+.btn {
+    padding: 0.75rem 1.25rem; font-weight: 600; font-size: 1rem;
+    border-radius: 0.5rem; border: none; cursor: pointer;
+    transition: all 0.3s ease;
+}
+.btn-success { background-color: var(--success-color); color: white; }
+
+.fab-sos {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 60px;
+    height: 60px;
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+.fab-sos:hover { transform: scale(1.1); }
+.fab-sos span { font-size: 0.7rem; font-weight: 600; margin-top: 2px; }
+
+.modal { display: none; position: fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); display: flex; align-items: flex-end; justify-content: center; }
+.modal-content { background-color: #fff; padding: 1.5rem; border-radius: 1rem 1rem 0 0; width: 100%; max-width: 480px; position: relative; animation: slide-up 0.3s ease-out; }
+@keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-content .close-button { color: #aaa; position: absolute; top: 0.75rem; right: 1rem; font-size: 28px; font-weight: bold; cursor: pointer; }
+
+.message-banner { padding: 1rem; margin: 0 1rem 1rem 1rem; border-radius: 0.5rem; color: white; }
+.message-banner.success { background-color: var(--success-color); }
+.message-banner.error { background-color: var(--danger-color); }
+
+.status-badge { padding: 0.25em 0.7em; font-size: 0.75rem; font-weight: 600; border-radius: 10rem; color: #fff; }
+.status-en-route { background-color: var(--primary-color); }
+.status-arrived-at-destination { background-color: var(--info-color); }
+.status-unloading { background-color: var(--text-muted); }
+.status-scheduled { background-color: var(--warning-color); color: #333;}
