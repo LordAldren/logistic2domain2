@@ -42,7 +42,7 @@
 
 /* Kalsada kung saan dadaan ang mga sasakyan */
 .road {
-    width: 300px; /* PINAikli ang kalsada */
+    width: 50px; /* PINAikli ang kalsada */
     height: 4px;
     background-image: linear-gradient(to right, #4A6CF7 40%, transparent 40%);
     background-size: 20px 4px;
