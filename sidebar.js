@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
             mainContent.classList.toggle('expanded');
         }
     });
-a
+
     // Para sa dropdown functionality
     const activeDropdown = document.querySelector('.sidebar .dropdown.active');
     if (activeDropdown) {

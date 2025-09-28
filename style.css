@@ -99,6 +99,12 @@ body.dark-mode {
     align-items: center;
     gap: 1rem;
     flex-grow: 1;
+    overflow: hidden;
+}
+.dropdown-toggle .link-content span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .sidebar-link:hover, .sidebar .dropdown-toggle:hover, .sidebar .dropdown.active > .dropdown-toggle, .sidebar .sidebar-link.active { 
@@ -153,7 +159,6 @@ body.dark-mode {
     overflow: hidden; 
     transition: max-height 0.3s ease-in-out; 
     background-color: rgba(0, 0, 0, 0.2); 
-    padding-left: 1rem; /* Indent sub-menu */
 }
 
 .sidebar .dropdown.open > .dropdown-menu { 
@@ -169,6 +174,7 @@ body.dark-mode {
     position: relative;
     border-left: 4px solid transparent;
     transition: all 0.2s ease-in-out;
+    white-space: nowrap;
 }
 
 .sidebar .dropdown-menu a:hover, .sidebar .dropdown-menu a.active-sub {
