@@ -82,10 +82,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 $_SESSION["username"] = $db_username;
                                 $_SESSION["role"] = $role;
 
+                                error_log("Login SUCCESS - Setting session variables");
+                                error_log("Session loggedin: " . ($_SESSION["loggedin"] ? 'true' : 'false'));
+                                error_log("Session id: " . $_SESSION["id"]);
+                                error_log("Session username: " . $_SESSION["username"]);
+                                error_log("Session role: " . $_SESSION["role"]);
+
                                 if ($role == 'driver') {
+                                    error_log("Redirecting to mobile_app.php");
                                     header("location: mobile_app.php");
                                 } else {
+                                    error_log("Redirecting to landpage.php");
                                     header("location: landpage.php");
+                                }
+                                
+                                // Force output buffer flush
+                                if (ob_get_level()) {
+                                    ob_end_flush();
                                 }
                                 exit;
 
