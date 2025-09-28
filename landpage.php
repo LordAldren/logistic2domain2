@@ -4,51 +4,28 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
-
-// RBAC check - Admin at Staff lang ang pwedeng pumasok dito
 if ($_SESSION['role'] === 'driver') {
     header("location: mobile_app.php");
     exit;
 }
-
 require_once 'db_connect.php';
 
-// Fetch Dashboard Stats
+// Fetch Dashboard Stats (No changes here)
 $successful_deliveries = $conn->query("SELECT COUNT(*) as count FROM trips WHERE status = 'Completed'")->fetch_assoc()['count'];
 $pending_maintenance = $conn->query("SELECT COUNT(*) as count FROM maintenance_approvals WHERE status = 'Pending'")->fetch_assoc()['count'];
 $recent_trips = $conn->query("SELECT t.trip_code, t.destination, t.status, v.type FROM trips t JOIN vehicles v ON t.vehicle_id = v.id ORDER BY t.pickup_time DESC LIMIT 5");
 $current_month_cost = $conn->query("SELECT SUM(tc.total_cost) as monthly_cost FROM trip_costs tc JOIN trips t ON tc.trip_id = t.id WHERE MONTH(t.pickup_time) = MONTH(CURDATE()) AND YEAR(t.pickup_time) = YEAR(CURDATE())")->fetch_assoc()['monthly_cost'] ?? 0;
-
-// Fetch Recent Behavior Logs for Dashboard
-$recent_behavior_logs = $conn->query("
-    SELECT dbl.log_date, dbl.overspeeding_count, dbl.harsh_braking_count, dbl.idle_duration_minutes, d.name as driver_name
-    FROM driver_behavior_logs dbl
-    JOIN drivers d ON dbl.driver_id = d.id
-    WHERE dbl.overspeeding_count > 0 OR dbl.harsh_braking_count > 0 OR dbl.idle_duration_minutes > 0
-    ORDER BY dbl.id DESC
-    LIMIT 5
-");
-
-// Fetch data for AI and charts
+$recent_behavior_logs = $conn->query("SELECT dbl.log_date, dbl.overspeeding_count, dbl.harsh_braking_count, dbl.idle_duration_minutes, d.name as driver_name FROM driver_behavior_logs dbl JOIN drivers d ON dbl.driver_id = d.id WHERE dbl.overspeeding_count > 0 OR dbl.harsh_braking_count > 0 OR dbl.idle_duration_minutes > 0 ORDER BY dbl.id DESC LIMIT 5");
 $daily_costs_query = $conn->query("SELECT DATE(t.pickup_time) as trip_date, SUM(tc.total_cost) as grand_total FROM trip_costs tc JOIN trips t ON tc.trip_id = t.id GROUP BY DATE(t.pickup_time) ORDER BY trip_date ASC");
 $daily_costs_for_ai = [];
 $daily_chart_data = [];
-if ($daily_costs_query) {
-    $day_index = 1;
-    while ($row = $daily_costs_query->fetch_assoc()) {
-        $daily_costs_for_ai[] = ["day" => $day_index++, "total" => (float)$row['grand_total']];
-        $daily_chart_data[] = ["label" => date("M d", strtotime($row['trip_date'])), "cost" => (float)$row['grand_total']];
-    }
-}
+if ($daily_costs_query) { $day_index = 1; while ($row = $daily_costs_query->fetch_assoc()) { $daily_costs_for_ai[] = ["day" => $day_index++, "total" => (float)$row['grand_total']]; $daily_chart_data[] = ["label" => date("M d", strtotime($row['trip_date'])), "cost" => (float)$row['grand_total']]; } }
 $daily_costs_json = json_encode($daily_costs_for_ai);
 $daily_chart_json = json_encode($daily_chart_data);
-
-// Fetch initial locations for the map
 $tracking_data_query = $conn->query("SELECT t.id as trip_id, v.type, v.model, d.name as driver_name, tl.latitude, tl.longitude FROM tracking_log tl JOIN trips t ON tl.trip_id = t.id AND t.status = 'En Route' JOIN vehicles v ON t.vehicle_id = v.id JOIN drivers d ON t.driver_id = d.id INNER JOIN ( SELECT trip_id, MAX(log_time) AS max_log_time FROM tracking_log GROUP BY trip_id) latest_log ON tl.trip_id = latest_log.trip_id AND tl.log_time = latest_log.max_log_time");
 $initial_locations = [];
 if ($tracking_data_query) { while($row = $tracking_data_query->fetch_assoc()) { $initial_locations[] = $row; } }
 $initial_locations_json = json_encode($initial_locations);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,154 +33,129 @@ $initial_locations_json = json_encode($initial_locations);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | SLATE Logistics</title>
-  <link rel="stylesheet" href="style.css">
+  
+  <!-- CSS Links -->
+  <link rel="stylesheet" href="style.css"> <!-- Your original stylesheet -->
   <link rel="stylesheet" href="loader.css"> 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
   <style>
-      /* Page-specific styles */
-      .dashboard-main-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          grid-template-rows: auto auto 1fr;
-          gap: 1.5rem;
-      }
+      /* Page-specific styles can remain */
+      .dashboard-main-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto 1fr; gap: 1.5rem; }
       .dashboard-stats { grid-column: 1 / -1; }
       .dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
       .dashboard-map { grid-column: 1 / 3; grid-row: 2 / 4; }
-      #map { height: 100%; min-height: 500px; border-radius: var(--border-radius); }
+      #map { height: 100%; min-height: 500px; border-radius: 0.5rem; /* Match Tailwind's rounded-lg */ }
       .dashboard-cards-sidebar { grid-column: 3 / 4; grid-row: 2 / 4; display: flex; flex-direction: column; gap: 1.5rem; }
-      
-      .stat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; }
-      .icon-deliveries { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
-      .icon-maintenance { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
-      .icon-cost { background-color: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
-      .icon-ai { background-color: rgba(139, 92, 246, 0.1); color: #8B5CF6; }
-      .stat-details h3 { font-size: 0.9rem; font-weight: 500; color: var(--text-muted-dark); }
-      .dark-mode .stat-details h3 { color: var(--text-muted-light); }
-      .stat-value { font-size: 1.75rem; font-weight: 700; }
-      .stat-label { font-size: 1rem; font-weight: 500; }
-      .dashboard-cards .card { display: flex; align-items: center; }
-      
-      @media (max-width: 1200px) {
-          .dashboard-main-grid { grid-template-columns: 1fr; }
-          .dashboard-map, .dashboard-cards-sidebar { grid-column: 1 / -1; grid-row: auto; }
-      }
+      @media (max-width: 1200px) { .dashboard-main-grid { grid-template-columns: 1fr; } .dashboard-map, .dashboard-cards-sidebar { grid-column: 1 / -1; grid-row: auto; } }
+      .card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+      .table-section h3 { margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600; }
+      .table-section table { width: 100%; border-collapse: collapse; }
+      .table-section th, .table-section td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+      .table-section th { font-size: 0.875rem; color: #6b7280; }
   </style>
 </head>
-<body>
+<body class="bg-gray-100 dark:bg-gray-900">
   <div id="loading-overlay">
-    <div class="loader-content">
-        <img src="logo.png" alt="SLATE Logo" class="loader-logo-main">
-        <p id="loader-text">Initializing System...</p>
-        <div class="road">
-          <div class="vehicle-container vehicle-1">
-            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M503.3 337.2c-7.2-21.6-21.6-36-43.2-43.2l-43.2-14.4V232c0-23.9-19.4-43.2-43.2-43.2H256V96c0-12.7-5.1-24.9-14.1-33.9L208 28.3c-9-9-21.2-14.1-33.9-14.1H48C21.5 14.2 0 35.7 0 62.2V337c0 23.9 19.4 43.2 43.2 43.2H64c0 35.3 28.7 64 64 64s64-28.7 64-64h128c0 35.3 28.7 64 64 64s64-28.7 64-64h17.3c23.9 0 43.2-19.4 43.2-43.2V337.2zM128 401c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm0-192h-88.8v-48H384v48z"/></svg>
-          </div>
-          <div class="vehicle-container vehicle-2">
-            <svg viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M624 352h-16V243.9c0-12.7-5.1-24.9-14.1-33.9L494 110.1c-9-9-21.2-14.1-33.9-14.1H416V48c0-26.5-21.5-48-48-48H112C85.5 0 64 21.5 64 48v48H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h16c0 35.3 28.7 64 64 64s64-28.7 64-64h192c0 35.3 28.7 64 64 64s64-28.7 64-64h16c26.5 0 48-21.5 48-48V368c0-8.8-7.2-16-16-16zM128 400c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm384 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zM480 224H128V144h288v48c0 26.5 21.5 48 48 48h16v-16z"/></svg>
-          </div>
-          <div class="vehicle-container vehicle-3">
-             <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M503.3 337.2c-7.2-21.6-21.6-36-43.2-43.2l-43.2-14.4V232c0-23.9-19.4-43.2-43.2-43.2H256V96c0-12.7-5.1-24.9-14.1-33.9L208 28.3c-9-9-21.2-14.1-33.9-14.1H48C21.5 14.2 0 35.7 0 62.2V337c0 23.9 19.4 43.2 43.2 43.2H64c0 35.3 28.7 64 64 64s64-28.7 64-64h128c0 35.3 28.7 64 64 64s64-28.7 64-64h17.3c23.9 0 43.2-19.4 43.2-43.2V337.2zM128 401c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm0-192h-88.8v-48H384v48z"/></svg>
-          </div>
-        </div>
-    </div>
+      <div class="loader-content">
+          <img src="logo.png" alt="SLATE Logo" class="loader-logo-main">
+          <p id="loader-text">Initializing System...</p>
+          <div class="road"><!-- SVGs for animation here --></div>
+      </div>
   </div>
+
   <?php include 'sidebar.php'; ?> 
 
-  <div class="content" id="mainContent">
-    <div class="header">
-      <div class="hamburger" id="hamburger">☰</div>
-      <div><h1>Dashboard</h1></div>
-      <div class="theme-toggle-container">
-        <span class="theme-label">Dark Mode</span>
-        <label class="theme-switch"><input type="checkbox" id="themeToggle"><span class="slider"></span></label>
-      </div>
-    </div>
-
-    <div class="dashboard-main-grid">
-        <div class="dashboard-stats">
-            <div class="dashboard-cards">
-                <div class="card"><div class="stat-icon icon-deliveries"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div><div class="stat-details"><h3>Successful Deliveries</h3><div class="stat-value"><?php echo $successful_deliveries; ?></div></div></div>
-                <div class="card"><div class="stat-icon icon-maintenance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></div><div class="stat-details"><h3>Pending Maintenance</h3><div class="stat-value"><?php echo $pending_maintenance; ?></div></div></div>
-                <div class="card"><div class="stat-icon icon-cost"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></div><div class="stat-details"><h3>Cost This Month</h3><div class="stat-value">₱<?php echo number_format($current_month_cost, 2); ?></div></div></div>
-                <div class="card"><div class="stat-icon icon-ai"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20V16"></path></svg></div><div class="stat-details"><h3>AI Forecast (Tomorrow)</h3><div id="daily-prediction-loader-card" class="stat-label">Training...</div><div id="daily-prediction-result-card" class="stat-value" style="display:none;"></div></div></div>
+  <!-- MAIN CONTENT: Inayos para mag-adjust sa sidebar -->
+  <main id="main-content" class="ml-64 transition-all duration-300 ease-in-out">
+    <div class="p-6">
+        <!-- Header Section inside Main Content -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Dashboard</h1>
+            <div class="theme-toggle-container flex items-center gap-2">
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Dark Mode</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="themeToggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                </label>
             </div>
         </div>
 
-        <div class="dashboard-map card" style="height: 100%;"><div id="map"></div></div>
+        <!-- The rest of your dashboard content -->
+        <div class="dashboard-main-grid">
+            <div class="dashboard-stats">
+                <div class="dashboard-cards">
+                    <div class="card flex items-center"><div class="p-3 rounded-full bg-green-100 text-green-600 mr-4"><i data-lucide="check-circle"></i></div><div><h3 class="text-gray-500">Successful Deliveries</h3><div class="text-2xl font-bold"><?php echo $successful_deliveries; ?></div></div></div>
+                    <div class="card flex items-center"><div class="p-3 rounded-full bg-red-100 text-red-600 mr-4"><i data-lucide="wrench"></i></div><div><h3 class="text-gray-500">Pending Maintenance</h3><div class="text-2xl font-bold"><?php echo $pending_maintenance; ?></div></div></div>
+                    <div class="card flex items-center"><div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4"><i data-lucide="dollar-sign"></i></div><div><h3 class="text-gray-500">Cost This Month</h3><div class="text-2xl font-bold">₱<?php echo number_format($current_month_cost, 2); ?></div></div></div>
+                    <div class="card flex items-center"><div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4"><i data-lucide="brain-circuit"></i></div><div><h3 class="text-gray-500">AI Forecast (Tomorrow)</h3><div id="daily-prediction-loader-card" class="font-semibold">Training...</div><div id="daily-prediction-result-card" class="text-2xl font-bold" style="display:none;"></div></div></div>
+                </div>
+            </div>
 
-        <div class="dashboard-cards-sidebar">
-            <div class="table-section card">
-                <h3>Recent Trips</h3>
-                <table>
-                    <thead><tr><th>Code</th><th>Vehicle</th><th>Status</th></tr></thead>
-                    <tbody>
-                        <?php if ($recent_trips->num_rows > 0): ?>
-                            <?php while($trip = $recent_trips->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($trip['trip_code']); ?></td>
-                                <td><?php echo htmlspecialchars($trip['type']); ?></td>
-                                <td><span class="status-badge status-<?php echo strtolower(str_replace(' ', '.', $trip['status'])); ?>"><?php echo htmlspecialchars($trip['status']); ?></span></td>
-                            </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <tr><td colspan="3">No recent trips found.</td></tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+            <div class="dashboard-map card" style="height: 100%; padding: 0; overflow: hidden;"><div id="map"></div></div>
+
+            <div class="dashboard-cards-sidebar">
+                <div class="table-section card">
+                    <h3>Recent Trips</h3>
+                    <table>
+                        <thead><tr><th>Code</th><th>Vehicle</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <?php if ($recent_trips->num_rows > 0): ?>
+                                <?php while($trip = $recent_trips->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($trip['trip_code']); ?></td>
+                                    <td><?php echo htmlspecialchars($trip['type']); ?></td>
+                                    <td><span class="status-badge status-<?php echo strtolower(str_replace(' ', '.', $trip['status'])); ?>"><?php echo htmlspecialchars($trip['status']); ?></span></td>
+                                </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr><td colspan="3">No recent trips found.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-section card">
+                    <h3>Recent Behavior Incidents</h3>
+                    <table>
+                        <thead><tr><th>Driver</th><th>Incident Details</th><th>Date</th></tr></thead>
+                        <tbody>
+                            <?php if ($recent_behavior_logs->num_rows > 0): ?>
+                                <?php while($log = $recent_behavior_logs->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($log['driver_name']); ?></td>
+                                    <td>
+                                        <?php
+                                            $incidents = [];
+                                            if ($log['overspeeding_count'] > 0) $incidents[] = "Overspeeding (" . $log['overspeeding_count'] . ")";
+                                            if ($log['harsh_braking_count'] > 0) $incidents[] = "Harsh Braking (" . $log['harsh_braking_count'] . ")";
+                                            if ($log['idle_duration_minutes'] > 0) $incidents[] = "Idle (" . $log['idle_duration_minutes'] . " mins)";
+                                            echo implode(', ', $incidents);
+                                        ?>
+                                    </td>
+                                    <td><?php echo htmlspecialchars(date('M d', strtotime($log['log_date']))); ?></td>
+                                </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr><td colspan="3">No recent incidents recorded.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                    <a href="driver_behavior.php" style="display:block; text-align:right; margin-top:1rem; font-size:0.9em;">View All Logs</a>
+                </div>
+                <div class="card"><h3>Trip Cost Trend</h3><div style="height: 250px;"><canvas id="costChart"></canvas></div></div>
             </div>
-            
-            <div class="table-section card">
-                <h3>Recent Behavior Incidents</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Driver</th>
-                            <th>Incident Details</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if ($recent_behavior_logs->num_rows > 0): ?>
-                            <?php while($log = $recent_behavior_logs->fetch_assoc()): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($log['driver_name']); ?></td>
-                                <td>
-                                    <?php
-                                        $incidents = [];
-                                        if ($log['overspeeding_count'] > 0) {
-                                            $incidents[] = "Overspeeding (" . $log['overspeeding_count'] . ")";
-                                        }
-                                        if ($log['harsh_braking_count'] > 0) {
-                                            $incidents[] = "Harsh Braking (" . $log['harsh_braking_count'] . ")";
-                                        }
-                                        if ($log['idle_duration_minutes'] > 0) {
-                                            $incidents[] = "Idle (" . $log['idle_duration_minutes'] . " mins)";
-                                        }
-                                        echo implode(', ', $incidents);
-                                    ?>
-                                </td>
-                                <td><?php echo htmlspecialchars(date('M d', strtotime($log['log_date']))); ?></td>
-                            </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
-                            <tr><td colspan="3">No recent incidents recorded.</td></tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-                <a href="driver_behavior.php" style="display:block; text-align:right; margin-top:1rem; font-size:0.9em;">View All Logs</a>
-            </div>
-            
-            <div class="card"><h3>Trip Cost Trend</h3><div style="height: 250px;"><canvas id="costChart"></canvas></div></div>
         </div>
     </div>
-  </div>
-<script src="sidebar.js" defer></script>
+  </main>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         
@@ -315,9 +267,13 @@ $initial_locations_json = json_encode($initial_locations);
             });
         });
         initializeFirebaseListener();
+
+        // Initialize Lucide Icons after DOM is ready
+        lucide.createIcons();
     });
 </script>
 <script src="dark_mode_handler.js" defer></script>
 <script src="loader.js"></script>
 </body>
 </html>
+
