@@ -32,7 +32,7 @@
 html, body {
   height: 100%;
   width: 100%;
-  overflow-x: hidden; /* Pinipigilan ang horizontal scroll */
+  overflow-x: hidden;
   position: relative;
 }
 
@@ -49,7 +49,7 @@ body.dark-mode {
   color: var(--text-light);
 }
 
-/* --- Sidebar --- */
+/* --- Sidebar Base --- */
 .sidebar { 
     width: var(--sidebar-width); 
     height: 100vh; 
@@ -73,184 +73,131 @@ body.dark-mode {
 .sidebar .logo img { max-width: 120px; height: auto; }
 .system-name { padding: 1rem 1.5rem; font-size: 0.8rem; font-weight: 500; color: var(--text-muted-dark); text-align: center; border-bottom: 1px solid var(--border-color-dark); margin-bottom: 1rem; letter-spacing: 0.5px; }
 .dark-mode .system-name { color: var(--text-muted-light); }
-
-.sidebar a, .sidebar .dropdown-toggle { 
-    display: flex; 
-    align-items: center; 
-    gap: 1rem; 
-    color: var(--text-muted-light); 
-    padding: 0.8rem 1.5rem; 
-    text-decoration: none; 
-    border-left: 4px solid transparent; 
-    transition: all 0.2s ease-in-out; 
-    font-weight: 500;
-    min-height: 2.8rem;
-    position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 0.1rem;
-}
-
-.sidebar a:hover, .sidebar .dropdown.active > .dropdown-toggle, .sidebar > a.active { 
-    background-color: rgba(74, 108, 247, 0.1); 
-    color: white; 
-    border-left-color: var(--primary-color); 
-}
-
-.sidebar-icon {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-}
-
+.sidebar-icon { width: 24px; height: 24px; flex-shrink: 0; }
 .sidebar .logout-link { margin-top: auto; }
 
-/* Collapsed Sidebar */
-.sidebar.collapsed { width: var(--sidebar-width-collapsed); }
-.sidebar.collapsed .system-name, .sidebar.collapsed a span, .sidebar.collapsed .dropdown-toggle::after { opacity: 0; display: none; }
-.sidebar.collapsed a, .sidebar.collapsed .dropdown-toggle { justify-content: center; }
-.sidebar.collapsed .dropdown-menu { display: none !important; }
+/* --- Sidebar Links & Dropdowns (REWORKED) --- */
 
-/* Sidebar Dropdown - Complete Fix */
-.sidebar .dropdown {
-    margin-bottom: 0.3rem;
-    position: relative;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-}
-
-.sidebar .dropdown .dropdown-toggle { 
-    position: relative; 
-    cursor: pointer;
+/* General styling para sa lahat ng clickable items sa sidebar */
+.sidebar a {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    min-height: 3rem;
-    padding: 0.8rem 1.5rem;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    margin: 0;
-}
-
-.sidebar .dropdown .dropdown-toggle span {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-right: 1rem;
-    font-weight: 500;
-}
-
-.sidebar .dropdown .dropdown-toggle::after { 
-    content: '▼'; 
-    font-size: 0.8em; 
-    transition: transform 0.3s ease-in-out; 
-    pointer-events: none;
-    font-weight: bold;
-    color: var(--text-muted-light);
-    flex-shrink: 0;
-    margin-left: 0.5rem;
-}
-
-.sidebar .dropdown.open > .dropdown-toggle::after { 
-    transform: rotate(180deg); 
-    color: white;
-}
-
-.sidebar .dropdown.open > .dropdown-toggle {
-    background-color: rgba(74, 108, 247, 0.1);
-    color: white;
-}
-
-.sidebar .dropdown-menu { 
-    max-height: 0; 
-    overflow: hidden; 
-    transition: max-height 0.3s ease-in-out; 
-    background-color: rgba(0, 0, 0, 0.3); 
-    margin: 0;
-    padding: 0;
-    border-left: 3px solid rgba(74, 108, 247, 0.5);
-    border-radius: 0 0 4px 4px;
-}
-
-.sidebar .dropdown.open > .dropdown-menu { 
-    max-height: 15rem; 
-}
-
-.sidebar .dropdown-menu a { 
-    font-size: 0.75em; 
-    padding: 0.6rem 1rem 0.6rem 2.8rem; 
-    background: rgba(0, 0, 0, 0.2); 
-    border-left: 3px solid transparent !important; 
-    transition: all 0.2s ease-in-out;
-    display: block;
-    margin: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 1rem;
     color: var(--text-muted-light);
     text-decoration: none;
-    line-height: 1.3;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.sidebar .dropdown-menu a:first-child {
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+/* Para sa non-dropdown links tulad ng Dashboard */
+.sidebar > a {
+    padding: 0.8rem 1.5rem;
+    border-left: 4px solid transparent;
+    margin-bottom: 0.25rem;
 }
 
-.sidebar .dropdown-menu a:last-child {
-    border-bottom: none;
+.sidebar > a:hover,
+.sidebar > a.active {
+    background-color: rgba(74, 108, 247, 0.1);
+    color: white;
+    border-left-color: var(--primary-color);
 }
 
-.sidebar .dropdown-menu a:hover { 
-    background-color: rgba(74, 108, 247, 0.2); 
-    border-left-color: var(--info-color) !important; 
-    color: white; 
+/* Dropdown container */
+.sidebar .dropdown {
+    margin-bottom: 0.25rem;
 }
 
-.sidebar .dropdown-menu a.active-sub { 
-    background-color: rgba(74, 108, 247, 0.25); 
-    border-left-color: var(--info-color) !important; 
-    color: white; 
-}
-
-/* Clean sidebar layout */
-.sidebar {
-    overflow-y: auto;
-    overflow-x: hidden;
+/* Ang clickable header ng dropdown */
+.sidebar .dropdown .dropdown-toggle {
+    cursor: pointer;
     width: 100%;
-    max-width: 280px;
+    padding: 0.8rem 1.5rem;
+    border-left: 4px solid transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Ensure dropdowns work on mobile */
-@media (max-width: 992px) {
-    .sidebar .dropdown-menu {
-        position: relative;
-        box-shadow: none;
-    }
-    
-    .sidebar .dropdown-menu a {
-        padding: 0.5rem 1rem 0.5rem calc(1rem + 24px + 0.5rem);
-        font-size: 0.8em;
-    }
+/* Active/Hover state para sa dropdown header */
+.sidebar .dropdown.active > .dropdown-toggle,
+.sidebar .dropdown .dropdown-toggle:hover {
+    background-color: rgba(74, 108, 247, 0.1);
+    color: white;
+    border-left-color: var(--primary-color);
 }
 
-/* Dark mode improvements */
-.dark-mode .sidebar .dropdown-menu {
-    background-color: rgba(0, 0, 0, 0.4);
-    border-left-color: rgba(74, 108, 247, 0.5);
+/* Wrapper para sa icon at text para maiwasan ang overflow issues */
+.sidebar .dropdown .dropdown-toggle .link-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    overflow: hidden; /* Mahalaga ito para hindi lumagpas ang text */
 }
 
-.dark-mode .sidebar .dropdown-menu a {
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+.sidebar .dropdown .dropdown-toggle .link-content span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.dark-mode .sidebar .dropdown-menu a:hover,
-.dark-mode .sidebar .dropdown-menu a.active-sub {
+/* Arrow indicator */
+.sidebar .dropdown .dropdown-toggle::after {
+    content: '▼';
+    font-size: 0.7em;
+    color: var(--text-muted-light);
+    transition: transform 0.3s ease-in-out;
+    margin-left: 0.5rem;
+    flex-shrink: 0; /* Para hindi ma-squish ang arrow */
+}
+
+/* Pag-ikot ng arrow kapag bukas ang dropdown */
+.sidebar .dropdown.open > .dropdown-toggle::after {
+    transform: rotate(180deg);
+}
+
+.sidebar .dropdown.open > .dropdown-toggle,
+.sidebar .dropdown.active > .dropdown-toggle {
+    color: white;
+}
+.sidebar .dropdown.open > .dropdown-toggle::after,
+.sidebar .dropdown.active > .dropdown-toggle::after {
+    color: white;
+}
+
+/* Ang mismong menu na naglalaman ng sub-links */
+.sidebar .dropdown-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding-left: 1rem; /* Indent para sa sub-menu */
+    margin-top: 0.25rem;
+}
+
+/* Pagbukas ng dropdown-menu */
+.sidebar .dropdown.open > .dropdown-menu {
+    max-height: 20rem; /* Dapat sapat ang taas para sa lahat ng items */
+}
+
+/* Ang mga link sa loob ng dropdown menu */
+.sidebar .dropdown-menu a {
+    padding: 0.6rem 1rem 0.6rem 3rem; /* Mas malaking indent para sa sub-items */
+    font-size: 0.85em;
+    border-left: 4px solid transparent;
+    display: block;
+}
+
+.sidebar .dropdown-menu a:hover,
+.sidebar .dropdown-menu a.active-sub {
     background-color: rgba(74, 108, 247, 0.2);
+    color: white;
+    border-left-color: var(--info-color);
 }
+
 
 /* --- Content Area --- */
 .content { 
@@ -346,71 +293,21 @@ tbody tr:hover { background-color: rgba(74, 108, 247, 0.05); }
 .form-control:focus { outline: 0; border-color: var(--primary-color); box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.25); }
 .form-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
 
-/* Modal (Inalis ang Pop-up behavior, ginawang inline card) */
+/* Modal */
 .modal {
-    display: none; /* Nakatago pa rin by default */
-    margin-top: 1.5rem;
-    animation: fadeIn 0.4s ease-out;
+    display: none; position: fixed; z-index: 1050; left: 0; top: 0;
+    width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
 }
-
 .modal-content {
-    background-color: #fff;
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    width: 100%;
-    max-width: 800px; /* Nilakihan para sa forms */
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
+    background-color: #fff; padding: 2rem; border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg); width: 90%; max-width: 600px;
+    position: relative; animation: fadeIn 0.3s ease-out;
     border: 1px solid var(--border-color-light);
 }
-
-.dark-mode .modal-content { 
-    background-color: var(--dark-card); 
-    border: 1px solid var(--border-color-dark);
-}
-
-.modal-content .close-button, .card .close-button { 
-    color: #aaa; 
-    position: absolute; 
-    top: 0.75rem; 
-    right: 1rem; 
-    font-size: 28px; 
-    font-weight: bold; 
-    cursor: pointer; 
-}
-
-@keyframes fadeIn { 
-    from { opacity: 0; transform: translateY(-15px); } 
-    to { opacity: 1; transform: translateY(0); } 
-}
-
-
-/* BAGONG STYLES PARA PALIITIN ANG LAMAN NG MODAL */
-.modal-content h2 {
-    font-size: 1.25rem; /* Niliitan ang font ng title */
-    margin-bottom: 1.25rem;
-}
-.modal .form-group {
-    margin-bottom: 0.8rem; /* Binawasan ang espasyo sa pagitan ng mga form fields */
-}
-.modal .form-group label {
-    font-size: 0.8rem; /* Niliitan ang font ng label */
-    margin-bottom: 0.3rem;
-}
-.modal .form-control {
-    padding: 0.5rem 0.7rem; /* Niliitan ang input fields */
-    font-size: 0.9rem;
-}
-.modal .form-actions {
-    margin-top: 1rem; /* Inilapit ang mga buttons */
-}
-.modal .btn {
-    padding: 0.5rem 1rem; /* Niliitan ang mga buttons */
-    font-size: 0.85rem;
-}
-/* Wakas ng bagong styles */
+.dark-mode .modal-content { background-color: var(--dark-card); border: 1px solid var(--border-color-dark);}
+.modal-content .close-button { color: #aaa; position: absolute; top: 0.75rem; right: 1rem; font-size: 28px; font-weight: bold; cursor: pointer; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 
 /* Other Styles */
 .message-banner { padding: 1rem; margin: 0 0 1.5rem 0; border-radius: var(--border-radius); color: white; }
@@ -420,7 +317,7 @@ tbody tr:hover { background-color: rgba(74, 108, 247, 0.05); }
 .status-active, .status-en-route, .status-in-progress, .status-confirmed, .status-completed, .status-arrived-at-destination, .status-unloading { background-color: var(--success-color); }
 .status-inactive, .status-cancelled { background-color: #858796; }
 .status-maintenance, .status-breakdown, .status-delayed, .status-pending-renewal { background-color: var(--warning-color); }
-.status-pending { background-color: var(--info-color); }
+.status-pending, .status-on-queue, .status-approved { background-color: var(--info-color); }
 .status-rejected { background-color: var(--danger-color); }
 .status-idle { background-color: #6c757d; }
 .status-ontime, .status-early { background-color: var(--success-color); }
@@ -433,33 +330,6 @@ tbody tr:hover { background-color: rgba(74, 108, 247, 0.05); }
 .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
 input:checked+.slider { background-color: var(--primary-color); }
 input:checked+.slider:before { transform: translateX(26px); }
-
-/* Available Vehicles Gallery */
-.vehicle-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-.vehicle-card { background-color: white; border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
-.dark-mode .vehicle-card { background-color: var(--dark-card); border: 1px solid var(--border-color-dark); }
-.vehicle-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-.vehicle-image { width: 100%; height: 200px; object-fit: cover; }
-.vehicle-details { padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
-.vehicle-title { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.25rem; }
-.vehicle-info { font-size: 0.9rem; color: var(--text-muted-dark); }
-.dark-mode .vehicle-info { color: var(--text-muted-light); }
-.vehicle-details .btn { margin-top: 1rem; width: 100%; }
-
-/* Route Adherence Score Colors */
-.score-high { color: var(--success-color); }
-.score-medium { color: var(--warning-color); }
-.score-low { color: var(--danger-color); }
-
-.expiring-soon {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: var(--danger-color);
-    font-weight: bold;
-}
-.dark-mode .expiring-soon {
-    background-color: rgba(239, 68, 68, 0.2);
-}
-
 
 /* Responsive Adjustments */
 @media (max-width: 992px) {
@@ -476,9 +346,3 @@ input:checked+.slider:before { transform: translateX(26px); }
     .content { padding: 1rem; }
     .card { padding: 1rem; }
 }
-
-
-
-
-
-
