@@ -1,23 +1,16 @@
 <?php
-/**
- * sidebar.php (Revised Component)
- * Ito ay isang component na para i-include sa ibang pages.
- */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
 $currentPage = basename($_SERVER['PHP_SELF']);
 $user_role = $_SESSION['role'] ?? 'admin'; 
 
-// --- Module Access Control ---
 $module_access = [
-    'dashboard' => ['admin', 'staff'],
-    'fvm'       => ['admin', 'staff'],
-    'vrds'      => ['admin', 'staff'],
-    'dtpm'      => ['admin', 'staff'],
-    'tcao'      => ['admin'],
-    'ma'        => ['admin']
+    'dashboard' => ['admin', 'staff'], 'fvm' => ['admin', 'staff'], 'vrds' => ['admin', 'staff'],
+    'dtpm' => ['admin', 'staff'], 'tcao' => ['admin'], 'ma' => ['admin']
 ];
+
 $fvm_pages = ['vehicle_list.php', 'maintenance_approval.php', 'usage_logs.php'];
 $vrds_pages = ['available_vehicles.php', 'reservation_booking.php', 'dispatch_control.php'];
 $dtpm_pages = ['live_tracking.php', 'driver_profiles.php', 'trip_history.php', 'route_adherence.php', 'driver_behavior.php', 'delivery_status.php'];
@@ -27,17 +20,16 @@ $ma_pages = ['mobile_app.php', 'admin_alerts.php', 'admin_messaging.php'];
 function is_module_active($pages, $currentPage) {
     return in_array($currentPage, $pages);
 }
+
 ?>
-
 <!-- Sidebar Container -->
-<aside id="sidebar" class="bg-gray-800 text-white w-64 min-h-screen flex flex-col overflow-hidden fixed top-0 left-0 h-full z-20 transition-all duration-300 ease-in-out">
+<div id="sidebar" class="bg-gray-800 text-white w-64 min-h-screen flex flex-col fixed top-0 left-0 h-full z-10">
 
-    <!-- Logo at System Name -->
+    <!-- Logo and Toggle -->
     <div class="flex items-center justify-between px-4 py-3 border-b border-gray-700">
-         <a href="landpage.php" class="flex items-center gap-3" title="SLATE Logistics Home">
-            <img src="logo.png" alt="SLATE Logo" class="h-10 sidebar-logo-expanded" />
-            <img src="logo2.png" alt="SLATE Logo" class="h-10 sidebar-logo-collapsed hidden" />
-            <span class="text-xl font-bold sidebar-text">SLATE</span>
+         <a href="landpage.php" class="flex items-center" title="SLATE Logistics Home">
+            <img src="logo.png" alt="SLATE Logo" class="h-12 sidebar-logo-expanded" />
+            <img src="logo2.png" alt="SLATE Logo" class="h-12 sidebar-logo-collapsed hidden" />
         </a>
         <button id="sidebar-toggle" class="text-white focus:outline-none" aria-label="Toggle Sidebar">
             <i data-lucide="chevron-left" class="w-6 h-6"></i>
@@ -46,26 +38,19 @@ function is_module_active($pages, $currentPage) {
 
     <!-- Navigation Links -->
     <nav class="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
-
-        <!-- Dashboard -->
         <?php if (in_array($user_role, $module_access['dashboard'])): ?>
             <a href="landpage.php" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-700 <?= $currentPage === 'landpage.php' ? 'bg-gray-700 font-semibold' : '' ?>">
-                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                <span class="sidebar-text">Dashboard</span>
+                <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="sidebar-text">Dashboard</span>
             </a>
         <?php endif; ?>
-
-        <!-- Fleet & Vehicle Management -->
+        
+        <!-- Fleet & Vehicle Mgt. -->
         <?php if (in_array($user_role, $module_access['fvm'])): $is_active = is_module_active($fvm_pages, $currentPage); ?>
             <button type="button" class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-700 group <?= $is_active ? 'bg-gray-700' : '' ?>" data-submenu-toggle="fvm-submenu">
                 <span class="flex items-center gap-3"><i data-lucide="truck" class="w-5 h-5"></i><span class="sidebar-text">Fleet & Vehicle Mgt.</span></span>
                 <i data-lucide="chevron-down" class="w-4 h-4 transition-transform submenu-chevron <?= $is_active ? 'rotate-180' : '' ?>"></i>
             </button>
-            <div id="fvm-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>">
-                <a href="vehicle_list.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'vehicle_list.php' ? 'bg-gray-600' : '' ?>">Vehicle List</a>
-                <a href="maintenance_approval.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'maintenance_approval.php' ? 'bg-gray-600' : '' ?>">Maintenance</a>
-                <a href="usage_logs.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'usage_logs.php' ? 'bg-gray-600' : '' ?>">Usage Logs</a>
-            </div>
+            <div id="fvm-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>"><a href="vehicle_list.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'vehicle_list.php' ? 'bg-gray-600' : '' ?>">Vehicle List</a><a href="maintenance_approval.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'maintenance_approval.php' ? 'bg-gray-600' : '' ?>">Maintenance</a><a href="usage_logs.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'usage_logs.php' ? 'bg-gray-600' : '' ?>">Usage Logs</a></div>
         <?php endif; ?>
 
         <!-- Reservation & Dispatch -->
@@ -74,14 +59,11 @@ function is_module_active($pages, $currentPage) {
                 <span class="flex items-center gap-3"><i data-lucide="calendar-check" class="w-5 h-5"></i><span class="sidebar-text">Reservation & Dispatch</span></span>
                 <i data-lucide="chevron-down" class="w-4 h-4 transition-transform submenu-chevron <?= $is_active ? 'rotate-180' : '' ?>"></i>
             </button>
-            <div id="vrds-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>">
-                <a href="available_vehicles.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'available_vehicles.php' ? 'bg-gray-600' : '' ?>">Available Vehicles</a>
-                <a href="reservation_booking.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'reservation_booking.php' ? 'bg-gray-600' : '' ?>">Booking</a>
-                <a href="dispatch_control.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'dispatch_control.php' ? 'bg-gray-600' : '' ?>">Dispatch & Trips</a>
-            </div>
+            <div id="vrds-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>"><a href="available_vehicles.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'available_vehicles.php' ? 'bg-gray-600' : '' ?>">Available Vehicles</a><a href="reservation_booking.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'reservation_booking.php' ? 'bg-gray-600' : '' ?>">Booking</a><a href="dispatch_control.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'dispatch_control.php' ? 'bg-gray-600' : '' ?>">Dispatch & Trips</a></div>
         <?php endif; ?>
-
-         <!-- Driver & Trip Performance -->
+        
+        <!-- Other Menu Items... -->
+        <!-- Driver & Trip Performance -->
         <?php if (in_array($user_role, $module_access['dtpm'])): $is_active = is_module_active($dtpm_pages, $currentPage); ?>
             <button type="button" class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-700 group <?= $is_active ? 'bg-gray-700' : '' ?>" data-submenu-toggle="dtpm-submenu">
                 <span class="flex items-center gap-3"><i data-lucide="map-pin" class="w-5 h-5"></i><span class="sidebar-text">Driver & Trip Perf.</span></span>
@@ -119,17 +101,15 @@ function is_module_active($pages, $currentPage) {
                 <a href="admin_messaging.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'admin_messaging.php' ? 'bg-gray-600' : '' ?>">Messaging</a>
             </div>
         <?php endif; ?>
-
     </nav>
     
-    <!-- Logout Link sa baba -->
+    <!-- Logout Link -->
     <div class="px-2 py-4 mt-auto border-t border-gray-700">
          <a href="logout.php" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-700">
-            <i data-lucide="log-out" class="w-5 h-5"></i>
-            <span class="sidebar-text">Logout</span>
+            <i data-lucide="log-out" class="w-5 h-5"></i><span class="sidebar-text">Logout</span>
         </a>
     </div>
-</aside>
+</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -138,14 +118,14 @@ function is_module_active($pages, $currentPage) {
         const mainContent = document.getElementById("main-content");
 
         if (!sidebar || !toggleBtn || !mainContent) {
-            console.error("Sidebar, toggle button, or main content not found!");
+            console.error("A required element for the sidebar functionality is missing.");
             return;
         }
 
-        const logoExpanded = document.querySelectorAll(".sidebar-logo-expanded");
-        const logoCollapsed = document.querySelectorAll(".sidebar-logo-collapsed");
-        const sidebarTextElements = document.querySelectorAll(".sidebar-text");
-        const submenuChevrons = document.querySelectorAll('.submenu-chevron');
+        const logoExpanded = sidebar.querySelectorAll(".sidebar-logo-expanded");
+        const logoCollapsed = sidebar.querySelectorAll(".sidebar-logo-collapsed");
+        const sidebarTextElements = sidebar.querySelectorAll(".sidebar-text");
+        const submenuChevrons = sidebar.querySelectorAll('.submenu-chevron');
         const icon = toggleBtn.querySelector("i");
         
         const toggleSidebar = () => {
@@ -156,18 +136,14 @@ function is_module_active($pages, $currentPage) {
 
             logoExpanded.forEach(el => el.classList.toggle("hidden"));
             logoCollapsed.forEach(el => el.classList.toggle("hidden"));
-            sidebarTextElements.forEach(el => el.classList.toggle("hidden"));
+            // Hide all sidebar text, including the logo text if it existed
+            document.querySelectorAll('.sidebar-text').forEach(el => el.classList.toggle('hidden'));
             submenuChevrons.forEach(chevron => chevron.classList.toggle('hidden'));
-
             icon.classList.toggle("rotate-180");
             
             if (sidebar.classList.contains('w-20')) {
-                document.querySelectorAll('[id$="-submenu"]').forEach(submenu => {
-                    submenu.classList.add('hidden');
-                });
-                 document.querySelectorAll('.submenu-chevron').forEach(chevron => {
-                    chevron.classList.remove('rotate-180');
-                });
+                document.querySelectorAll('[id$="-submenu"]').forEach(submenu => submenu.classList.add('hidden'));
+                document.querySelectorAll('.submenu-chevron').forEach(chevron => chevron.classList.remove('rotate-180'));
             }
         };
         
@@ -179,25 +155,18 @@ function is_module_active($pages, $currentPage) {
                     toggleSidebar();
                     return;
                 }
-
-                const targetId = btn.getAttribute('data-submenu-toggle');
-                const submenu = document.getElementById(targetId);
+                const submenu = document.getElementById(btn.getAttribute('data-submenu-toggle'));
                 const chevron = btn.querySelector('.submenu-chevron');
-                
                 if (submenu) {
                     submenu.classList.toggle('hidden');
                     chevron && chevron.classList.toggle('rotate-180');
                 }
             });
         });
-        
-        // Initialize Lucide icons
+
         if (typeof lucide !== "undefined") {
             lucide.createIcons();
-        } else {
-            console.warn("Lucide icons script not loaded.");
         }
     });
 </script>
-</body>
-</html>
+
