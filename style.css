@@ -32,7 +32,7 @@
 html, body {
   height: 100%;
   width: 100%;
-  overflow-x: hidden; /* Pinipigilan ang horizontal scroll */
+  overflow-x: hidden;
   position: relative;
 }
 
@@ -71,10 +71,10 @@ body.dark-mode {
 
 .sidebar .logo { padding: 1.5rem; text-align: center; border-bottom: 1px solid var(--border-color-dark); }
 .sidebar .logo img { max-width: 120px; height: auto; }
-.system-name { padding: 1rem 1.5rem; font-size: 0.8rem; font-weight: 500; color: var(--text-muted-dark); text-align: center; border-bottom: 1px solid var(--border-color-dark); margin-bottom: 1rem; letter-spacing: 0.5px; }
+.system-name { padding: 1rem 1.5rem; font-size: 0.8rem; font-weight: 500; color: var(--text-muted-dark); text-align: center; border-bottom: 1px solid var(--border-color-dark); margin-bottom: 1rem; letter-spacing: 0.5px; white-space: nowrap; }
 .dark-mode .system-name { color: var(--text-muted-light); }
 
-.sidebar a, .sidebar .dropdown-toggle { 
+.sidebar-link, .sidebar .dropdown-toggle { 
     display: flex; 
     align-items: center; 
     gap: 1rem; 
@@ -84,9 +84,24 @@ body.dark-mode {
     border-left: 4px solid transparent; 
     transition: all 0.2s ease-in-out; 
     font-weight: 500;
+    min-height: 3rem;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0.1rem 0;
+}
+.dropdown-toggle {
+    justify-content: space-between;
+}
+.dropdown-toggle .link-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-grow: 1;
 }
 
-.sidebar a:hover, .sidebar .dropdown.active > .dropdown-toggle, .sidebar > a.active { 
+.sidebar-link:hover, .sidebar .dropdown-toggle:hover, .sidebar .dropdown.active > .dropdown-toggle, .sidebar .sidebar-link.active { 
     background-color: rgba(74, 108, 247, 0.1); 
     color: white; 
     border-left-color: var(--primary-color); 
@@ -102,48 +117,66 @@ body.dark-mode {
 
 /* Collapsed Sidebar */
 .sidebar.collapsed { width: var(--sidebar-width-collapsed); }
-.sidebar.collapsed .system-name, .sidebar.collapsed a span { opacity: 0; display: none; }
-.sidebar.collapsed a { justify-content: center; }
-.sidebar.collapsed .dropdown-menu { display: none; }
-
-/* Sidebar Dropdown */
-.sidebar .dropdown .dropdown-toggle { position: relative; cursor: pointer; }
-
-.sidebar .dropdown .dropdown-toggle::after { 
-    content: '▼'; 
-    position: absolute; 
-    right: 1.5rem; 
-    font-size: 0.8em; 
-    transition: transform 0.3s; 
+.sidebar.collapsed .system-name, .sidebar.collapsed .sidebar-link span, .sidebar.collapsed .dropdown-toggle .link-content span, .sidebar.collapsed .dropdown-toggle .arrow { 
+    opacity: 0; 
+    display: none; 
+    pointer-events: none;
+}
+.sidebar.collapsed .sidebar-link, .sidebar.collapsed .dropdown-toggle { 
+    justify-content: center; 
+}
+.sidebar.collapsed .dropdown-menu { 
+    display: none !important;
 }
 
-.sidebar .dropdown.open > .dropdown-toggle::after { transform: rotate(180deg); }
+/* Sidebar Dropdown */
+.sidebar .dropdown-toggle {
+    cursor: pointer;
+}
+
+.dropdown-toggle .arrow {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--text-muted-light);
+    transition: transform 0.3s ease-in-out;
+    flex-shrink: 0;
+}
+
+.sidebar .dropdown.open > .dropdown-toggle .arrow { 
+    transform: rotate(180deg); 
+}
 
 .sidebar .dropdown-menu { 
     max-height: 0; 
     overflow: hidden; 
     transition: max-height 0.3s ease-in-out; 
     background-color: rgba(0, 0, 0, 0.2); 
-    padding-left: 2rem; 
+    padding-left: 1rem; /* Indent sub-menu */
 }
 
 .sidebar .dropdown.open > .dropdown-menu { 
     max-height: 500px; /* Adjust as needed */
 }
 
-.sidebar .dropdown-menu a { 
-    font-size: 0.9em; 
-    padding: 0.7rem 1.5rem; 
-    border-left: 0;
-    background: transparent;
+.sidebar .dropdown-menu a {
+    display: block;
+    padding: 0.6rem 1.5rem 0.6rem 3.5rem; /* Indent text */
+    color: var(--text-muted-light);
+    text-decoration: none;
+    font-size: 0.9em;
+    position: relative;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease-in-out;
 }
+
 .sidebar .dropdown-menu a:hover, .sidebar .dropdown-menu a.active-sub {
     background-color: rgba(74, 108, 247, 0.1);
     color: white;
+    border-left-color: var(--info-color);
 }
-.sidebar .dropdown-menu a.active-sub {
-    font-weight: 600;
-}
+
 
 /* --- Content Area --- */
 .content { 

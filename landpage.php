@@ -57,14 +57,13 @@ $initial_locations_json = json_encode($initial_locations);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | SLATE Logistics</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="loader.css"> <!-- DAGDAG ITO -->
+  <link rel="stylesheet" href="loader.css"> 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <script src="sidebar.js"></script>
   <style>
       /* Page-specific styles */
       .dashboard-main-grid {
@@ -97,28 +96,23 @@ $initial_locations_json = json_encode($initial_locations);
   </style>
 </head>
 <body>
-  <!-- DAGDAG ITO: LOADER HTML START -->
   <div id="loading-overlay">
     <div class="loader-content">
         <img src="logo.png" alt="SLATE Logo" class="loader-logo-main">
         <p id="loader-text">Initializing System...</p>
         <div class="road">
-          <!-- Truck 1 -->
           <div class="vehicle-container vehicle-1">
             <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M503.3 337.2c-7.2-21.6-21.6-36-43.2-43.2l-43.2-14.4V232c0-23.9-19.4-43.2-43.2-43.2H256V96c0-12.7-5.1-24.9-14.1-33.9L208 28.3c-9-9-21.2-14.1-33.9-14.1H48C21.5 14.2 0 35.7 0 62.2V337c0 23.9 19.4 43.2 43.2 43.2H64c0 35.3 28.7 64 64 64s64-28.7 64-64h128c0 35.3 28.7 64 64 64s64-28.7 64-64h17.3c23.9 0 43.2-19.4 43.2-43.2V337.2zM128 401c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm0-192h-88.8v-48H384v48z"/></svg>
           </div>
-          <!-- Van -->
           <div class="vehicle-container vehicle-2">
             <svg viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M624 352h-16V243.9c0-12.7-5.1-24.9-14.1-33.9L494 110.1c-9-9-21.2-14.1-33.9-14.1H416V48c0-26.5-21.5-48-48-48H112C85.5 0 64 21.5 64 48v48H48c-26.5 0-48 21.5-48 48v192c0 26.5 21.5 48 48 48h16c0 35.3 28.7 64 64 64s64-28.7 64-64h192c0 35.3 28.7 64 64 64s64-28.7 64-64h16c26.5 0 48-21.5 48-48V368c0-8.8-7.2-16-16-16zM128 400c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm384 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zM480 224H128V144h288v48c0 26.5 21.5 48 48 48h16v-16z"/></svg>
           </div>
-           <!-- Truck 2 -->
           <div class="vehicle-container vehicle-3">
              <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M503.3 337.2c-7.2-21.6-21.6-36-43.2-43.2l-43.2-14.4V232c0-23.9-19.4-43.2-43.2-43.2H256V96c0-12.7-5.1-24.9-14.1-33.9L208 28.3c-9-9-21.2-14.1-33.9-14.1H48C21.5 14.2 0 35.7 0 62.2V337c0 23.9 19.4 43.2 43.2 43.2H64c0 35.3 28.7 64 64 64s64-28.7 64-64h128c0 35.3 28.7 64 64 64s64-28.7 64-64h17.3c23.9 0 43.2-19.4 43.2-43.2V337.2zM128 401c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm256 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm0-192h-88.8v-48H384v48z"/></svg>
           </div>
         </div>
     </div>
   </div>
-  <!-- DAGDAG ITO: LOADER HTML END -->
 
   <?php include 'sidebar.php'; ?>
 
@@ -164,8 +158,7 @@ $initial_locations_json = json_encode($initial_locations);
                     </tbody>
                 </table>
             </div>
-
-            <!-- START: BAGONG CARD PARA SA BEHAVIOR LOGS -->
+            
             <div class="table-section card">
                 <h3>Recent Behavior Incidents</h3>
                 <table>
@@ -206,24 +199,15 @@ $initial_locations_json = json_encode($initial_locations);
                 </table>
                 <a href="driver_behavior.php" style="display:block; text-align:right; margin-top:1rem; font-size:0.9em;">View All Logs</a>
             </div>
-            <!-- END: BAGONG CARD PARA SA BEHAVIOR LOGS -->
             
             <div class="card"><h3>Trip Cost Trend</h3><div style="height: 250px;"><canvas id="costChart"></canvas></div></div>
         </div>
     </div>
   </div>
+<script src="sidebar.js" defer></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- Standard page scripts ---
-        document.getElementById('hamburger').addEventListener('click', function() {
-          const sidebar = document.getElementById('sidebar');
-          const mainContent = document.getElementById('mainContent');
-          if (window.innerWidth <= 992) { sidebar.classList.toggle('show'); } 
-          else { sidebar.classList.toggle('collapsed'); mainContent.classList.toggle('expanded'); }
-        });
-
-        // Sidebar dropdown functionality is now handled by sidebar.js
-
+        
         // --- AI & Chart Logic ---
         const dailyCostDataForAI = <?php echo $daily_costs_json; ?>;
         const dailyChartData = <?php echo $daily_chart_json; ?>;
@@ -270,7 +254,7 @@ $initial_locations_json = json_encode($initial_locations);
             });
         }
 
-        // --- START: MAP LOGIC ---
+        // --- MAP LOGIC ---
         const map = L.map('map').setView([12.8797, 121.7740], 6); // Philippines view
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
@@ -322,7 +306,6 @@ $initial_locations_json = json_encode($initial_locations);
             } catch(e) { console.error("Firebase init error:", e); }
         }
 
-        // Load initial data from PHP then start listening
         const initialLocations = <?php echo $initial_locations_json; ?>;
         initialLocations.forEach(loc => {
             handleDataChange(loc.trip_id, {
@@ -333,11 +316,9 @@ $initial_locations_json = json_encode($initial_locations);
             });
         });
         initializeFirebaseListener();
-        // --- END: MAP LOGIC ---
-
     });
 </script>
 <script src="dark_mode_handler.js" defer></script>
-<script src="loader.js"></script> <!-- DAGDAG ITO -->
+<script src="loader.js"></script>
 </body>
 </html>
