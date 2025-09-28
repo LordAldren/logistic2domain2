@@ -124,10 +124,10 @@ body.dark-mode {
 }
 
 .sidebar .dropdown .dropdown-toggle::after { 
-    content: '‹'; 
+    content: '▼'; 
     position: absolute; 
     right: 1.5rem; 
-    font-size: 1.4em; 
+    font-size: 0.8em; 
     transition: transform 0.3s ease-in-out; 
     pointer-events: none;
     font-weight: bold;
@@ -135,7 +135,7 @@ body.dark-mode {
 }
 
 .sidebar .dropdown.open > .dropdown-toggle::after { 
-    transform: rotate(-90deg); 
+    transform: rotate(180deg); 
     color: white;
 }
 

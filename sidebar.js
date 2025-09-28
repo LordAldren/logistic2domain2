@@ -9,10 +9,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeSidebarDropdowns() {
-    // Auto-open ALL dropdowns by default
-    document.querySelectorAll('.sidebar .dropdown').forEach(function(dropdown) {
-        dropdown.classList.add('open');
-    });
+    // Keep dropdowns closed by default - clean look
+    // Only open the active dropdown if there is one
+    const activeDropdown = document.querySelector('.sidebar .dropdown.active');
+    if (activeDropdown) {
+        activeDropdown.classList.add('open');
+    }
 
     // Handle dropdown toggle clicks
     document.querySelectorAll('.sidebar .dropdown-toggle').forEach(function(toggle) {
