@@ -1,105 +1,300 @@
 <?php
-// sidebar.php
-$current_page = basename($_SERVER['PHP_SELF']);
-$user_role = $_SESSION['role'] ?? 'guest';
+/**
+ * sidebar_revised.php
+ *
+ * Pinagsamang version ng dalawang sidebar.
+ * - Gumagamit ng modernong design at functionality (collapsible) mula sa sidebar_admin.php.
+ * - Naglalaman ng business logic (user roles, modules) mula sa sidebar.php.
+ */
 
-// Tukuyin kung aling role ang may access sa bawat module
+// Mahalagang simulan ang session para ma-access ang session variables.
+// Siguraduhing ito ang unang tatawagin bago mag-output ng kahit anong HTML.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Kunin ang filename ng kasalukuyang page para sa pag-highlight ng active link.
+$currentPage = basename($_SERVER['PHP_SELF']);
+
+// Kunin ang user role mula sa session. Gagawing 'admin' by default para sa demonstration.
+// Sa totoong application, mas magandang i-default sa 'guest' at i-redirect kung hindi naka-login.
+$user_role = $_SESSION['role'] ?? 'admin'; 
+
+// --- Module Access Control ---
+// Dito tinutukoy kung anong role ang may access sa bawat module.
 $module_access = [
-    'fvm' => ['admin', 'staff'],
-    'vrds' => ['admin', 'staff'],
-    'dtpm' => ['admin', 'staff'],
-    'tcao' => ['admin'],
-    'ma' => ['admin']
+    'dashboard' => ['admin', 'staff'],
+    'fvm'       => ['admin', 'staff'],
+    'vrds'      => ['admin', 'staff'],
+    'dtpm'      => ['admin', 'staff'],
+    'tcao'      => ['admin'],
+    'ma'        => ['admin']
 ];
 
-// Mga grupo ng pahina para sa pag-set ng 'active' state
+// --- Mga Page Group para sa Active State ---
+// Tinutukoy kung aling mga page ang kabilang sa bawat module para sa pag-highlight ng active dropdown.
 $fvm_pages = ['vehicle_list.php', 'maintenance_approval.php', 'usage_logs.php'];
 $vrds_pages = ['available_vehicles.php', 'reservation_booking.php', 'dispatch_control.php'];
 $dtpm_pages = ['live_tracking.php', 'driver_profiles.php', 'trip_history.php', 'route_adherence.php', 'driver_behavior.php', 'delivery_status.php'];
 $tcao_pages = ['cost_analysis.php', 'trip_costs.php', 'budget_management.php'];
 $ma_pages = ['mobile_app.php', 'admin_alerts.php', 'admin_messaging.php'];
 
-function render_sidebar_link($href, $icon_svg, $text, $is_active) {
-    echo "<a href=\"$href\" class=\"sidebar-link " . ($is_active ? 'active' : '') . "\">";
-    echo "<div class=\"link-content\">";
-    echo "<span class=\"sidebar-icon\">$icon_svg</span>";
-    echo "<span>$text</span>";
-    echo "</div>";
-    echo "</a>";
+// --- Helper function para malaman kung active ang isang module (dropdown) ---
+function is_module_active($pages, $currentPage) {
+    return in_array($currentPage, $pages);
 }
 
-function render_dropdown($text, $icon_svg, $pages, $current_page, $sub_links) {
-    $is_active = in_array($current_page, $pages);
-    echo "<div class=\"dropdown " . ($is_active ? 'active' : '') . "\">";
-    echo "<a href=\"#\" class=\"dropdown-toggle\">";
-    echo "<div class=\"link-content\">";
-    echo "<span class=\"sidebar-icon\">$icon_svg</span>";
-    echo "<span>$text</span>";
-    echo "</div>";
-    echo "<span class=\"arrow\"></span>"; // Arrow for dropdown
-    echo "</a>";
-    echo "<div class=\"dropdown-menu\">";
-    foreach ($sub_links as $link_href => $link_text) {
-        echo "<a href=\"$link_href\" class=\"" . ($current_page == $link_href ? 'active-sub' : '') . "\">$link_text</a>";
-    }
-    echo "</div>";
-    echo "</div>";
-}
 ?>
-<div class="sidebar" id="sidebar">
-    <div class="logo"><img src="logo.png" alt="SLATE Logo"></div>
-    <div class="system-name">SLATE LOGISTICS</div>
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8" />
+    <title>SLATE Logistics Sidebar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="logo2.png" /> <!-- Palitan ng tamang path sa iyong logo -->
 
-    <?php if ($user_role === 'admin' || $user_role === 'staff'): ?>
-        <?php render_sidebar_link('landpage.php', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>', 'Dashboard', $current_page == 'landpage.php'); ?>
-    <?php endif; ?>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-    <?php if (in_array($user_role, $module_access['fvm'])): ?>
-        <?php render_dropdown('Fleet & Vehicle Mgt.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10v14z"></path><path d="M20 17h-4v-7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7z"></path><path d="M12 5H9.5a2.5 2.5 0 0 1 0-5C10.9 0 12 1.1 12 2.5V5z"></path><path d="M18 5h-1.5a2.5 2.5 0 0 1 0-5C17.4 0 18 1.1 18 2.5V5z"></path></svg>', $fvm_pages, $current_page, [
-            'vehicle_list.php' => 'Vehicle List',
-            'maintenance_approval.php' => 'Maintenance Approval',
-            'usage_logs.php' => 'Usage Logs'
-        ]); ?>
-    <?php endif; ?>
+    <style>
+        /* Custom styles para sa mas smooth na transition at scrollbar */
+        #sidebar {
+            transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #sidebar-toggle i {
+            transition: transform 300ms ease-in-out;
+        }
+        #main-content {
+            transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+        /* Custom scrollbar para sa sidebar navigation */
+        #sidebar nav::-webkit-scrollbar {
+            width: 6px;
+        }
+        #sidebar nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #sidebar nav::-webkit-scrollbar-thumb {
+            background: #4a5568; /* gray-600 */
+            border-radius: 3px;
+        }
+        #sidebar nav::-webkit-scrollbar-thumb:hover {
+            background: #718096; /* gray-500 */
+        }
+    </style>
+</head>
+<body class="flex bg-gray-100">
 
-    <?php if (in_array($user_role, $module_access['vrds'])): ?>
-        <?php render_dropdown('Reservation & Dispatch', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 17.929H6c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h12c1.105 0 2 .895 2 2v2.828"></path><path d="M6 17h12"></path><circle cx="6" cy="17" r="2"></circle><circle cx="18" cy="17" r="2"></circle><path d="M12 12V5h4l3 3v2h-3"></path></svg>', $vrds_pages, $current_page, [
-            'available_vehicles.php' => 'Available Vehicles',
-            'reservation_booking.php' => 'Reservation Booking',
-            'dispatch_control.php' => 'Dispatch & Trips'
-        ]); ?>
-    <?php endif; ?>
-    
-    <?php if (in_array($user_role, $module_access['dtpm'])): ?>
-        <?php render_dropdown('Driver & Trip Perf.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"></path><circle cx="12" cy="10" r="3"></circle></svg>', $dtpm_pages, $current_page, [
-            'live_tracking.php' => 'Live Tracking',
-            'driver_profiles.php' => 'Driver Profiles',
-            'trip_history.php' => 'Trip History',
-            'route_adherence.php' => 'Route Adherence',
-            'driver_behavior.php' => 'Driver Behavior',
-            'delivery_status.php' => 'Delivery Status'
-        ]); ?>
-    <?php endif; ?>
+    <!-- Sidebar Container -->
+    <div id="sidebar" class="bg-gray-800 text-white w-64 min-h-screen flex flex-col overflow-hidden fixed top-0 left-0 h-full z-10">
 
-    <?php if (in_array($user_role, $module_access['tcao'])): ?>
-        <?php render_dropdown('Transport Cost Analysis', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20V16"></path></svg>', $tcao_pages, $current_page, [
-            'cost_analysis.php' => 'Cost Analysis',
-            'trip_costs.php' => 'Trip Costs',
-            'budget_management.php' => 'Budget Management'
-        ]); ?>
-    <?php endif; ?>
+        <!-- Logo at System Name -->
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-700">
+             <a href="landpage.php" class="flex items-center gap-3" title="SLATE Logistics Home">
+                <img src="logo.png" alt="SLATE Logo" class="h-10 sidebar-logo-expanded" />
+                <img src="logo2.png" alt="SLATE Logo" class="h-10 sidebar-logo-collapsed hidden" />
+                <span class="text-xl font-bold sidebar-text">SLATE</span>
+            </a>
+            <button id="sidebar-toggle" class="text-white focus:outline-none" aria-label="Toggle Sidebar">
+                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+            </button>
+        </div>
 
-    <?php if (in_array($user_role, $module_access['ma'])): ?>
-        <?php render_dropdown('Mobile Fleet Command', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18h.01"></path><path d="M10.5 5.5L8 3H4v18h16V3h-4l-2.5 2.5z"></path><path d="M12 11v-1"></path></svg>', $ma_pages, $current_page, [
-            'mobile_app.php' => 'Driver App Sim',
-            'admin_alerts.php' => 'Emergency Alerts',
-            'admin_messaging.php' => 'Messaging'
-        ]); ?>
-    <?php endif; ?>
-    
-    <a href="logout.php" class="logout-link sidebar-link" id="logout-link">
-        <span class="sidebar-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span>
-        <span>Logout</span>
-    </a>
-</div>
+        <!-- Navigation Links -->
+        <nav class="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
 
+            <!-- Dashboard -->
+            <?php if (in_array($user_role, $module_access['dashboard'])): ?>
+                <a href="landpage.php" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-700 <?= $currentPage === 'landpage.php' ? 'bg-gray-700 font-semibold' : '' ?>">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span class="sidebar-text">Dashboard</span>
+                </a>
+            <?php endif; ?>
+
+            <!-- Fleet & Vehicle Management -->
+            <?php if (in_array($user_role, $module_access['fvm'])): 
+                $is_active = is_module_active($fvm_pages, $currentPage);
+            ?>
+                <button type="button" class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-700 group <?= $is_active ? 'bg-gray-700' : '' ?>" data-submenu-toggle="fvm-submenu">
+                    <span class="flex items-center gap-3">
+                        <i data-lucide="truck" class="w-5 h-5"></i>
+                        <span class="sidebar-text">Fleet & Vehicle Mgt.</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform submenu-chevron <?= $is_active ? 'rotate-180' : '' ?>"></i>
+                </button>
+                <div id="fvm-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>">
+                    <a href="vehicle_list.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'vehicle_list.php' ? 'bg-gray-600' : '' ?>">Vehicle List</a>
+                    <a href="maintenance_approval.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'maintenance_approval.php' ? 'bg-gray-600' : '' ?>">Maintenance</a>
+                    <a href="usage_logs.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'usage_logs.php' ? 'bg-gray-600' : '' ?>">Usage Logs</a>
+                </div>
+            <?php endif; ?>
+
+            <!-- Reservation & Dispatch -->
+            <?php if (in_array($user_role, $module_access['vrds'])): 
+                $is_active = is_module_active($vrds_pages, $currentPage);
+            ?>
+                <button type="button" class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-700 group <?= $is_active ? 'bg-gray-700' : '' ?>" data-submenu-toggle="vrds-submenu">
+                    <span class="flex items-center gap-3">
+                        <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                        <span class="sidebar-text">Reservation & Dispatch</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform submenu-chevron <?= $is_active ? 'rotate-180' : '' ?>"></i>
+                </button>
+                <div id="vrds-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>">
+                    <a href="available_vehicles.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'available_vehicles.php' ? 'bg-gray-600' : '' ?>">Available Vehicles</a>
+                    <a href="reservation_booking.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'reservation_booking.php' ? 'bg-gray-600' : '' ?>">Booking</a>
+                    <a href="dispatch_control.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'dispatch_control.php' ? 'bg-gray-600' : '' ?>">Dispatch & Trips</a>
+                </div>
+            <?php endif; ?>
+
+             <!-- Driver & Trip Performance -->
+            <?php if (in_array($user_role, $module_access['dtpm'])): 
+                $is_active = is_module_active($dtpm_pages, $currentPage);
+            ?>
+                <button type="button" class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-700 group <?= $is_active ? 'bg-gray-700' : '' ?>" data-submenu-toggle="dtpm-submenu">
+                    <span class="flex items-center gap-3">
+                        <i data-lucide="map-pin" class="w-5 h-5"></i>
+                        <span class="sidebar-text">Driver & Trip Perf.</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform submenu-chevron <?= $is_active ? 'rotate-180' : '' ?>"></i>
+                </button>
+                <div id="dtpm-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>">
+                    <a href="live_tracking.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'live_tracking.php' ? 'bg-gray-600' : '' ?>">Live Tracking</a>
+                    <a href="driver_profiles.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'driver_profiles.php' ? 'bg-gray-600' : '' ?>">Driver Profiles</a>
+                    <a href="trip_history.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'trip_history.php' ? 'bg-gray-600' : '' ?>">Trip History</a>
+                </div>
+            <?php endif; ?>
+
+            <!-- Transport Cost Analysis -->
+            <?php if (in_array($user_role, $module_access['tcao'])): 
+                $is_active = is_module_active($tcao_pages, $currentPage);
+            ?>
+                <button type="button" class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-700 group <?= $is_active ? 'bg-gray-700' : '' ?>" data-submenu-toggle="tcao-submenu">
+                    <span class="flex items-center gap-3">
+                        <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+                        <span class="sidebar-text">Transport Cost Analysis</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform submenu-chevron <?= $is_active ? 'rotate-180' : '' ?>"></i>
+                </button>
+                <div id="tcao-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>">
+                    <a href="cost_analysis.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'cost_analysis.php' ? 'bg-gray-600' : '' ?>">Cost Analysis</a>
+                    <a href="trip_costs.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'trip_costs.php' ? 'bg-gray-600' : '' ?>">Trip Costs</a>
+                    <a href="budget_management.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'budget_management.php' ? 'bg-gray-600' : '' ?>">Budget Management</a>
+                </div>
+            <?php endif; ?>
+
+            <!-- Mobile Fleet Command -->
+            <?php if (in_array($user_role, $module_access['ma'])): 
+                $is_active = is_module_active($ma_pages, $currentPage);
+            ?>
+                <button type="button" class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-700 group <?= $is_active ? 'bg-gray-700' : '' ?>" data-submenu-toggle="ma-submenu">
+                    <span class="flex items-center gap-3">
+                        <i data-lucide="smartphone" class="w-5 h-5"></i>
+                        <span class="sidebar-text">Mobile Fleet Command</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform submenu-chevron <?= $is_active ? 'rotate-180' : '' ?>"></i>
+                </button>
+                <div id="ma-submenu" class="ml-9 space-y-1 <?= $is_active ? '' : 'hidden' ?>">
+                    <a href="mobile_app.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'mobile_app.php' ? 'bg-gray-600' : '' ?>">Driver App Sim</a>
+                    <a href="admin_alerts.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'admin_alerts.php' ? 'bg-gray-600' : '' ?>">Emergency Alerts</a>
+                    <a href="admin_messaging.php" class="block px-3 py-2 rounded-md text-sm hover:bg-gray-700 <?= $currentPage === 'admin_messaging.php' ? 'bg-gray-600' : '' ?>">Messaging</a>
+                </div>
+            <?php endif; ?>
+
+        </nav>
+        
+        <!-- Logout Link sa baba -->
+        <div class="px-2 py-4 mt-auto border-t border-gray-700">
+             <a href="logout.php" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-700">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
+                <span class="sidebar-text">Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 
+      Ito ang placeholder para sa main content mo.
+      Nagdagdag ako ng `id="main-content"` at `ml-64` (margin-left) para hindi matakpan ng sidebar.
+      Ang JavaScript sa baba ang bahalang mag-adjust nito kapag nag-collapse/expand ang sidebar.
+    -->
+    <main id="main-content" class="flex-1 p-4 sm:p-6 md:p-8 ml-64">
+        <!-- Dito ilalagay ang content ng iyong page -->
+        <h1 class="text-2xl font-bold">Main Content Area</h1>
+        <p>Halimbawa, dito ang laman ng iyong dashboard, table, o forms.</p>
+    </main>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const sidebar = document.getElementById("sidebar");
+            const toggleBtn = document.getElementById("sidebar-toggle");
+            const mainContent = document.getElementById("main-content");
+
+            const logoExpanded = document.querySelectorAll(".sidebar-logo-expanded");
+            const logoCollapsed = document.querySelectorAll(".sidebar-logo-collapsed");
+            const sidebarTextElements = document.querySelectorAll(".sidebar-text");
+            const submenuChevrons = document.querySelectorAll('.submenu-chevron');
+            const icon = toggleBtn.querySelector("i");
+            
+            // Function para sa pag-toggle ng sidebar
+            const toggleSidebar = () => {
+                sidebar.classList.toggle("w-64");
+                sidebar.classList.toggle("w-20");
+                mainContent.classList.toggle("ml-64");
+                mainContent.classList.toggle("ml-20");
+
+                // I-toggle ang visibility ng mga logo at text
+                logoExpanded.forEach(el => el.classList.toggle("hidden"));
+                logoCollapsed.forEach(el => el.classList.toggle("hidden"));
+                sidebarTextElements.forEach(el => el.classList.toggle("hidden"));
+                submenuChevrons.forEach(chevron => chevron.classList.toggle('hidden'));
+
+                // I-rotate ang toggle icon
+                icon.classList.toggle("rotate-180");
+                
+                // Kung naka-collapse ang sidebar, isara lahat ng submenu
+                if (sidebar.classList.contains('w-20')) {
+                    document.querySelectorAll('[id$="-submenu"]').forEach(submenu => {
+                        submenu.classList.add('hidden');
+                    });
+                     document.querySelectorAll('.submenu-chevron').forEach(chevron => {
+                        chevron.classList.remove('rotate-180');
+                    });
+                }
+            };
+            
+            toggleBtn.addEventListener("click", toggleSidebar);
+
+            // Para sa mga submenu toggle
+            document.querySelectorAll('[data-submenu-toggle]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Huwag i-toggle ang submenu kung naka-collapse ang sidebar
+                    if (sidebar.classList.contains('w-20')) {
+                        toggleSidebar(); // Palakihin muna ang sidebar
+                        return;
+                    }
+
+                    const targetId = btn.getAttribute('data-submenu-toggle');
+                    const submenu = document.getElementById(targetId);
+                    const chevron = btn.querySelector('.submenu-chevron');
+                    
+                    if (submenu) {
+                        submenu.classList.toggle('hidden');
+                        chevron && chevron.classList.toggle('rotate-180');
+                    }
+                });
+            });
+
+            // I-initialize ang Lucide icons
+            if (typeof lucide !== "undefined") {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>
