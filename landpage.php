@@ -85,6 +85,18 @@ $initial_locations_json = json_encode($initial_locations);
       .table-section table { width: 100%; border-collapse: collapse; }
       .table-section th, .table-section td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
       .table-section th { font-size: 0.875rem; color: #6b7280; }
+
+      /* --- IDINAGDAG PARA I-CENTER ANG LOADER --- */
+      #loading-overlay {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+      .loader-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+      }
   </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900">
