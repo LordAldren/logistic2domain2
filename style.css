@@ -79,16 +79,17 @@ body.dark-mode {
     align-items: center; 
     gap: 1rem; 
     color: var(--text-muted-light); 
-    padding: 0.9rem 1.5rem; 
+    padding: 0.8rem 1.5rem; 
     text-decoration: none; 
     border-left: 4px solid transparent; 
     transition: all 0.2s ease-in-out; 
     font-weight: 500;
-    min-height: 3rem;
+    min-height: 2.8rem;
     position: relative;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 0.1rem;
 }
 
 .sidebar a:hover, .sidebar .dropdown.active > .dropdown-toggle, .sidebar > a.active { 
@@ -111,9 +112,9 @@ body.dark-mode {
 .sidebar.collapsed a, .sidebar.collapsed .dropdown-toggle { justify-content: center; }
 .sidebar.collapsed .dropdown-menu { display: none !important; }
 
-/* Sidebar Dropdown - Clean Layout */
+/* Sidebar Dropdown - Fixed Layout */
 .sidebar .dropdown {
-    margin-bottom: 0.1rem;
+    margin-bottom: 0.2rem;
     position: relative;
 }
 
@@ -124,19 +125,26 @@ body.dark-mode {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    min-height: 3rem;
+    min-height: 2.8rem;
+    padding: 0.8rem 1.5rem;
+}
+
+.sidebar .dropdown .dropdown-toggle span {
+    flex: 1;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 1rem;
 }
 
 .sidebar .dropdown .dropdown-toggle::after { 
     content: '▼'; 
-    position: absolute; 
-    right: 1.5rem; 
-    font-size: 0.7em; 
+    font-size: 0.6em; 
     transition: transform 0.3s ease-in-out; 
     pointer-events: none;
     font-weight: bold;
     color: var(--text-muted-light);
+    flex-shrink: 0;
 }
 
 .sidebar .dropdown.open > .dropdown-toggle::after { 
@@ -148,29 +156,28 @@ body.dark-mode {
     max-height: 0; 
     overflow: hidden; 
     transition: max-height 0.3s ease-in-out; 
-    background-color: rgba(0, 0, 0, 0.3); 
+    background-color: rgba(0, 0, 0, 0.2); 
     margin: 0;
     padding: 0;
-    border-left: 2px solid rgba(74, 108, 247, 0.4);
-    border-radius: 0 0 4px 4px;
+    border-left: 2px solid rgba(74, 108, 247, 0.3);
 }
 
 .sidebar .dropdown.open > .dropdown-menu { 
-    max-height: 15rem; 
+    max-height: 12rem; 
 }
 
 .sidebar .dropdown-menu a { 
-    font-size: 0.75em; 
-    padding: 0.4rem 1rem 0.4rem 3rem; 
+    font-size: 0.7em; 
+    padding: 0.5rem 1rem 0.5rem 2.5rem; 
     background: none; 
     border-left: 2px solid transparent !important; 
     transition: all 0.2s ease-in-out;
     display: block;
     margin: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     color: var(--text-muted-light);
     text-decoration: none;
-    line-height: 1.3;
+    line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -181,13 +188,13 @@ body.dark-mode {
 }
 
 .sidebar .dropdown-menu a:hover { 
-    background-color: rgba(74, 108, 247, 0.15); 
+    background-color: rgba(74, 108, 247, 0.1); 
     border-left-color: var(--info-color) !important; 
     color: white; 
 }
 
 .sidebar .dropdown-menu a.active-sub { 
-    background-color: rgba(74, 108, 247, 0.2); 
+    background-color: rgba(74, 108, 247, 0.15); 
     border-left-color: var(--info-color) !important; 
     color: white; 
 }
@@ -198,21 +205,6 @@ body.dark-mode {
     overflow-x: hidden;
     width: 100%;
     max-width: 280px;
-}
-
-.sidebar .dropdown-menu a {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-}
-
-/* Ensure proper text wrapping */
-.sidebar .dropdown-toggle span {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 /* Ensure dropdowns work on mobile */
