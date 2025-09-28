@@ -129,7 +129,8 @@ body.dark-mode {
     background-color: rgba(0,0,0,0.2); 
     border-radius: 0 0 8px 8px;
 }
-.sidebar .dropdown.open > .dropdown-menu { 
+.sidebar .dropdown.open > .dropdown-menu,
+.sidebar .dropdown .dropdown-menu { 
     max-height: 500px; 
 }
 .sidebar .dropdown-menu a { 

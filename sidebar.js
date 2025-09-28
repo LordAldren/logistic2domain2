@@ -9,15 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeSidebarDropdowns() {
-    // Auto-open active dropdown
-    const activeDropdown = document.querySelector('.sidebar .dropdown.active');
-    if (activeDropdown) {
-        activeDropdown.classList.add('open');
-        const menu = activeDropdown.querySelector('.dropdown-menu');
+    // Auto-open ALL dropdowns by default
+    document.querySelectorAll('.sidebar .dropdown').forEach(function(dropdown) {
+        dropdown.classList.add('open');
+        const menu = dropdown.querySelector('.dropdown-menu');
         if (menu) {
             menu.style.maxHeight = menu.scrollHeight + 'px';
         }
-    }
+    });
 
     // Handle dropdown toggle clicks
     document.querySelectorAll('.sidebar .dropdown-toggle').forEach(function(toggle) {

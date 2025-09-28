@@ -31,7 +31,7 @@ $ma_pages = ['mobile_app.php', 'admin_alerts.php', 'admin_messaging.php'];
     <?php endif; ?>
 
     <?php if (in_array($user_role, $module_access['fvm'])): ?>
-    <div class="dropdown <?php echo (in_array($current_page, $fvm_pages)) ? 'active' : ''; ?>">
+    <div class="dropdown open <?php echo (in_array($current_page, $fvm_pages)) ? 'active' : ''; ?>">
         <a href="#" class="dropdown-toggle">
             <span class="sidebar-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10v14z"></path><path d="M20 17h-4v-7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7z"></path><path d="M12 5H9.5a2.5 2.5 0 0 1 0-5C10.9 0 12 1.1 12 2.5V5z"></path><path d="M18 5h-1.5a2.5 2.5 0 0 1 0-5C17.4 0 18 1.1 18 2.5V5z"></path></svg></span>
             <span>Fleet & Vehicle Mgt.</span>
@@ -45,7 +45,7 @@ $ma_pages = ['mobile_app.php', 'admin_alerts.php', 'admin_messaging.php'];
     <?php endif; ?>
 
     <?php if (in_array($user_role, $module_access['vrds'])): ?>
-    <div class="dropdown <?php echo (in_array($current_page, $vrds_pages)) ? 'active' : ''; ?>">
+    <div class="dropdown open <?php echo (in_array($current_page, $vrds_pages)) ? 'active' : ''; ?>">
         <a href="#" class="dropdown-toggle">
             <span class="sidebar-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 17.929H6c-1.105 0-2-.895-2-2V7c0-1.105.895-2 2-2h12c1.105 0 2 .895 2 2v2.828"></path><path d="M6 17h12"></path><circle cx="6" cy="17" r="2"></circle><circle cx="18" cy="17" r="2"></circle><path d="M12 12V5h4l3 3v2h-3"></path></svg></span>
             <span>Reservation & Dispatch</span>
@@ -59,7 +59,7 @@ $ma_pages = ['mobile_app.php', 'admin_alerts.php', 'admin_messaging.php'];
     <?php endif; ?>
     
     <?php if (in_array($user_role, $module_access['dtpm'])): ?>
-    <div class="dropdown <?php echo (in_array($current_page, $dtpm_pages)) ? 'active' : ''; ?>">
+    <div class="dropdown open <?php echo (in_array($current_page, $dtpm_pages)) ? 'active' : ''; ?>">
         <a href="#" class="dropdown-toggle">
              <span class="sidebar-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
             <span>Driver & Trip Perf.</span>
@@ -76,7 +76,7 @@ $ma_pages = ['mobile_app.php', 'admin_alerts.php', 'admin_messaging.php'];
     <?php endif; ?>
 
     <?php if (in_array($user_role, $module_access['tcao'])): ?>
-    <div class="dropdown <?php echo (in_array($current_page, $tcao_pages)) ? 'active' : ''; ?>">
+    <div class="dropdown open <?php echo (in_array($current_page, $tcao_pages)) ? 'active' : ''; ?>">
         <a href="#" class="dropdown-toggle">
             <span class="sidebar-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20V16"></path></svg></span>
             <span>Transport Cost Analysis</span>
@@ -90,7 +90,7 @@ $ma_pages = ['mobile_app.php', 'admin_alerts.php', 'admin_messaging.php'];
     <?php endif; ?>
 
     <?php if (in_array($user_role, $module_access['ma'])): ?>
-    <div class="dropdown <?php echo (in_array($current_page, $ma_pages)) ? 'active' : ''; ?>">
+    <div class="dropdown open <?php echo (in_array($current_page, $ma_pages)) ? 'active' : ''; ?>">
         <a href="#" class="dropdown-toggle">
             <span class="sidebar-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18h.01"></path><path d="M10.5 5.5L8 3H4v18h16V3h-4l-2.5 2.5z"></path><path d="M12 11v-1"></path></svg></span>
             <span>Mobile Fleet Command</span>
